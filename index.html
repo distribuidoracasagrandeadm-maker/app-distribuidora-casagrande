@@ -158,8 +158,19 @@
             <h1 class="text-sm md:text-base font-black tracking-wide leading-none">CASAGRANDE</h1>
             <span id="badge-role" class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-cg_gold text-cg_dark">Vendedor</span>
           </div>
-          <p id="header-subtitle" class="text-[11px] text-stone-300 mt-0.5">Raul Marcovich • Meta R$ 175.100</p>
-        </div>
+          <p id="header-subtitle" class="text-[11px] text-stone-300 mt-0.5">Raul Marcovich</p>
+          </div>
+          <!-- MINI INDICADOR DE META GLOBAL -->
+          <div id="global-meta-indicator" onclick="openMenu('metas')" class="cursor-pointer ml-3 pl-3 border-l border-stone-600 hidden md:flex flex-col gap-0.5 hover:opacity-80 transition" title="Clique para ver Detalhes de Meta">
+             <div class="flex items-center justify-between gap-3 text-[9px] font-bold">
+                 <span class="text-stone-300">META 2026: <strong id="hdr-ano-pct" class="text-cg_gold">0%</strong></span>
+                 <span class="text-stone-300" id="hdr-mes-label">NOV/26: <strong id="hdr-mes-pct" class="text-cg_green">0%</strong></span>
+             </div>
+             <div class="flex items-center gap-3 w-full">
+                 <div class="w-20 bg-stone-700 h-1 rounded-full overflow-hidden"><div id="hdr-ano-bar" class="h-1 bg-cg_gold" style="width:0%"></div></div>
+                 <div class="w-20 bg-stone-700 h-1 rounded-full overflow-hidden"><div id="hdr-mes-bar" class="h-1 bg-cg_green" style="width:0%"></div></div>
+             </div>
+          </div>
       </div>
       <div class="flex items-center gap-1.5">
         <button id="btn-pwa-install" onclick="triggerInstall()" class="bg-cg_gold text-cg_dark font-extrabold text-[11px] px-2.5 py-1.5 rounded-lg shadow hover:opacity-90">
@@ -282,7 +293,7 @@
       <div class="mt-8 pt-4 border-t border-stone-200 flex items-center justify-between text-stone-400 text-[10px]">
         <div>
           <p class="font-bold">Sobre o aplicativo</p>
-          <p>Versão 17</p>
+          <p>Versão 18</p>
         </div>
         <button onclick="checkForUpdates()" class="p-2.5 rounded-full border border-stone-200 hover:bg-stone-100 text-cg_dark shadow-sm flex items-center gap-1 transition">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
@@ -347,78 +358,6 @@
             <input type="text" id="dash-global-search" oninput="debounceDashSearch(this.value)" placeholder="🔍 Buscar cliente, produto, categoria ou mês (drill-down rápido)..." class="w-full border border-stone-300 rounded-xl px-3 py-2 text-xs font-bold bg-white hover:border-cg_rust focus:border-cg_rust outline-none transition-colors" />
             <div id="dash-active-filters" class="flex flex-wrap gap-1.5 empty:hidden"></div>
         </div>
-      </div>
-
-      <!-- PARTE 8 — INDICADOR DE META NO TOPO DA VISÃO EXECUTIVA -->
-      <div class="card p-4 border-l-4 border-l-purple-600 bg-gradient-to-r from-stone-900 to-cg_dark text-white space-y-3">
-        <div class="flex items-center justify-between border-b border-stone-700 pb-2">
-          <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-cg_rust text-white text-[10px] font-black uppercase">METAS EXECUTIVAS</span>
-            <h3 class="text-xs md:text-sm font-black uppercase tracking-wider">Acompanhamento Oficial 2026</h3>
-          </div>
-          <span id="meta-widget-subtitle" class="text-[11px] text-stone-300 font-semibold">Baseado na Tabela Oficial de Metas</span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- META DO ANO -->
-          <div class="bg-stone-800/80 p-3.5 rounded-xl border border-stone-700 flex flex-col justify-between space-y-2">
-            <div class="flex justify-between items-center">
-              <span class="text-xs font-black uppercase text-stone-300">ANO 2026</span>
-              <div class="text-right">
-                <span class="text-[10px] text-stone-400">META: <strong id="mw-ano-meta" class="text-white">R$ 0,00</strong></span>
-                <span class="text-[10px] text-stone-400 ml-2">FEITO: <strong id="mw-ano-feito" class="text-cg_green">R$ 0,00</strong></span>
-              </div>
-            </div>
-            <div class="w-full bg-stone-700 rounded-full h-3 overflow-hidden relative">
-              <div id="mw-ano-bar" class="h-3 rounded-full transition-all duration-500 bg-cg_green" style="width: 0%"></div>
-            </div>
-            <div class="flex justify-between items-center text-[11px]">
-              <span id="mw-ano-pct" class="font-black text-cg_green">0,0%</span>
-              <span id="mw-ano-falta" class="text-stone-400">Faltam R$ 0,00</span>
-            </div>
-            <div id="mw-ano-proj" class="text-[10px] text-stone-300 pt-1 border-t border-stone-700/60 flex justify-between">
-              <span>Projeção Fechamento: R$ 0,00</span>
-              <span id="mw-ano-proj-status" class="text-cg_green font-bold">✓ No alvo</span>
-            </div>
-          </div>
-
-          <!-- META DO MÊS -->
-          <div class="bg-stone-800/80 p-3.5 rounded-xl border border-stone-700 flex flex-col justify-between space-y-2">
-            <div class="flex justify-between items-center">
-              <span id="mw-mes-titulo" class="text-xs font-black uppercase text-stone-300">MÊS (FILTRADO)</span>
-              <div class="text-right">
-                <span class="text-[10px] text-stone-400">META: <strong id="mw-mes-meta" class="text-white">R$ 0,00</strong></span>
-                <span class="text-[10px] text-stone-400 ml-2">FEITO: <strong id="mw-mes-feito" class="text-cg_green">R$ 0,00</strong></span>
-              </div>
-            </div>
-            <div class="w-full bg-stone-700 rounded-full h-3 overflow-hidden relative">
-              <div id="mw-mes-bar" class="h-3 rounded-full transition-all duration-500 bg-cg_rust" style="width: 0%"></div>
-            </div>
-            <div class="flex justify-between items-center text-[11px]">
-              <span id="mw-mes-pct" class="font-black text-cg_rust">0,0%</span>
-              <span id="mw-mes-falta" class="text-stone-400">Faltam R$ 0,00</span>
-            </div>
-            <div id="mw-mes-proj" class="text-[10px] text-stone-300 pt-1 border-t border-stone-700/60 flex justify-between">
-              <span>Projeção Mês: R$ 0,00</span>
-              <span id="mw-mes-proj-status" class="text-cg_green font-bold">✓ No alvo</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PARTE 9 — CARROSSEL DE EVOLUÇÃO DA META -->
-      <div class="card p-4 md:p-5">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <div>
-            <h3 class="text-xs md:text-sm font-black uppercase text-cg_dark">🎯 Carrossel de Evolução da Meta (2026)</h3>
-            <p class="text-[11px] text-stone-500">Acompanhamento mês a mês. Clique em qualquer card para filtrar o dashboard para aquele período.</p>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <button onclick="moveMetaCarousel(-1)" class="px-3 py-1 rounded-lg bg-stone-200 hover:bg-stone-300 text-cg_dark font-black text-xs">◀</button>
-            <button onclick="moveMetaCarousel(1)" class="px-3 py-1 rounded-lg bg-cg_rust text-white font-black text-xs">▶</button>
-          </div>
-        </div>
-        <div id="meta-carousel-cards" class="flex gap-3 overflow-x-auto no-scrollbar pb-2 pt-1"></div>
       </div>
 
       <!-- 4 Cards de KPIs Dinâmicos do Período Filtrado -->
@@ -854,50 +793,112 @@
     <!-- =======================================================================
          ABA 5: METAS DE NOVEMBRO & PÃO DE ALHO RESERVA ONE
     ======================================================================== -->
-    <section id="sec-metas" class="hidden space-y-4">
-      <div class="card p-4 border-l-4 border-l-purple-600 flex flex-wrap items-center justify-between gap-3">
+        <section id="sec-metas" class="hidden space-y-4">
+      <div class="card p-4 border-l-4 border-l-purple-600 flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-stone-900 to-cg_dark text-white">
         <div>
-          <h2 class="text-sm font-black text-cg_dark uppercase">Metas &amp; Campanhas</h2>
-          <p id="lbl-meta-periodo" class="text-xs font-bold text-cg_rust mt-0.5">Período: Nov/2026</p>
+          <h2 class="text-sm font-black uppercase tracking-wider">Módulo de Metas &amp; Campanhas</h2>
+          <p id="lbl-meta-periodo" class="text-xs font-bold text-stone-300 mt-0.5">Gestão de Metas Oficiais</p>
         </div>
-        <div class="flex items-center gap-2 text-[10px] font-bold">
+        <div class="flex items-center gap-2 text-[10px] font-bold text-cg_dark">
             <select id="meta-ano" onchange="renderMetas()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white focus:outline-none"><option value="TODOS">Consolidado</option><option value="2025">2025</option><option value="2026" selected>2026</option></select>
             <select id="meta-mes" onchange="renderMetas()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white focus:outline-none"><option value="TODOS">Todos os Meses</option><option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option><option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option><option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option><option value="10">Outubro</option><option value="11" selected>Novembro</option><option value="12">Dezembro</option></select>
         </div>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div class="card p-4 border-l-4 border-l-cg_rust">
-          <p id="m-title-meta" class="text-[11px] font-bold uppercase text-stone-500">Acompanhamento de Meta</p>
-          <div class="mt-2 space-y-1.5">
-            <div class="flex justify-between text-xs">
-              <span class="text-stone-500 font-semibold">Valor da Venda:</span>
-              <strong id="m-val-fat" class="text-cg_dark font-black">R$ 0,00</strong>
+
+      <!-- PAINEL COMPLETO DE METAS (Movido da Visão Executiva) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- META DO ANO -->
+        <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-between space-y-3">
+          <div class="flex justify-between items-start">
+            <div>
+              <span class="text-xs font-black uppercase text-cg_dark">ANO 2026 (Acumulado)</span>
+              <p class="text-[10px] text-stone-400 mt-0.5">Realizado de Jan até <span id="mw-ano-mes-limite">o momento</span></p>
             </div>
-            <div class="flex justify-between text-xs">
-              <span class="text-stone-500 font-semibold">Valor da Meta:</span>
-              <strong id="m-val-meta" class="text-stone-600 font-black">R$ 0,00</strong>
-            </div>
-            <div class="flex justify-between text-xs pt-1 border-t border-stone-100">
-              <span class="text-stone-500 font-semibold">Status Atingido:</span>
-              <strong id="m-pct-meta" class="text-cg_rust font-black">0,0%</strong>
+            <div class="text-right">
+              <span class="text-[10px] text-stone-500 font-bold">META: <strong id="mw-ano-meta" class="text-cg_dark">R$ 0,00</strong></span><br>
+              <span class="text-[10px] text-stone-500 font-bold">FEITO: <strong id="mw-ano-feito" class="text-cg_green">R$ 0,00</strong></span>
             </div>
           </div>
-          
-          <!-- Barra de progresso -->
-          <div class="w-full bg-stone-200 rounded-full h-2 mt-2.5 overflow-hidden">
-            <div id="m-bar-meta" class="bg-cg_rust h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+          <div class="w-full bg-stone-100 rounded-full h-4 overflow-hidden relative border border-stone-200">
+            <div id="mw-ano-bar" class="h-4 rounded-full transition-all duration-500 bg-cg_green" style="width: 0%"></div>
           </div>
-          <p id="m-sub-fat" class="text-[10px] text-stone-400 mt-1.5 text-center">Calculando...</p>
+          <div class="flex justify-between items-center text-xs">
+            <span id="mw-ano-pct" class="font-black text-cg_green text-base">0,0%</span>
+            <span id="mw-ano-falta" class="text-stone-500 font-bold">Faltam R$ 0,00</span>
+          </div>
+          <div id="mw-ano-proj" class="text-xs text-stone-600 font-bold pt-2 border-t border-stone-100 flex justify-between items-center">
+            <span>Projeção Final: R$ 0,00</span>
+            <span id="mw-ano-proj-status" class="text-cg_green font-black">✓ No alvo</span>
+          </div>
         </div>
-        <div class="card p-4 border-l-4 border-l-cg_green">
-          <p class="text-[11px] font-bold uppercase text-stone-500">Comissão Projetada (21% MB)</p>
-          <p id="m-val-com" class="text-2xl font-black text-cg_green mt-1">R$ 2.626,50</p>
-          <p id="m-sub-com" class="text-xs text-stone-500 mt-1">Alíquota de 1,5% (Faixa 20% a 24,99%)</p>
+
+        <!-- META DO MÊS / PERÍODO -->
+        <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-between space-y-3">
+          <div class="flex justify-between items-start">
+            <div>
+              <span id="mw-mes-titulo" class="text-xs font-black uppercase text-cg_dark">MÊS CORRENTE</span>
+              <p class="text-[10px] text-stone-400 mt-0.5">Visão do filtro aplicado</p>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] text-stone-500 font-bold">META: <strong id="mw-mes-meta" class="text-cg_dark">R$ 0,00</strong></span><br>
+              <span class="text-[10px] text-stone-500 font-bold">FEITO: <strong id="mw-mes-feito" class="text-cg_green">R$ 0,00</strong></span>
+            </div>
+          </div>
+          <div class="w-full bg-stone-100 rounded-full h-4 overflow-hidden relative border border-stone-200">
+            <div id="mw-mes-bar" class="h-4 rounded-full transition-all duration-500 bg-cg_rust" style="width: 0%"></div>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span id="mw-mes-pct" class="font-black text-cg_rust text-base">0,0%</span>
+            <span id="mw-mes-falta" class="text-stone-500 font-bold">Faltam R$ 0,00</span>
+          </div>
+          <div id="mw-mes-proj" class="text-xs text-stone-600 font-bold pt-2 border-t border-stone-100 flex justify-between items-center">
+            <span>Projeção Mês: R$ 0,00</span>
+            <span id="mw-mes-proj-status" class="text-cg_green font-black">✓ No alvo</span>
+          </div>
         </div>
+      </div>
+
+      <!-- CARROSSEL DE EVOLUÇÃO DA META -->
+      <div class="card p-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div>
+            <h3 class="text-xs md:text-sm font-black uppercase text-cg_dark">🎯 Evolução Mês a Mês da Meta (2026)</h3>
+            <p class="text-[11px] text-stone-500">Acompanhamento mensalizado. Clique para filtrar o dashboard.</p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="moveMetaCarousel(-1)" class="px-3 py-1 rounded-lg bg-stone-200 hover:bg-stone-300 text-cg_dark font-black text-xs">◀</button>
+            <button onclick="moveMetaCarousel(1)" class="px-3 py-1 rounded-lg bg-cg_rust text-white font-black text-xs">▶</button>
+          </div>
+        </div>
+        <div id="meta-carousel-cards" class="flex gap-3 overflow-x-auto no-scrollbar pb-2 pt-1"></div>
+      </div>
+
+      <!-- TABELA OFICIAL DE METAS E COMISSÃO PROJETADA -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="card p-4 border-l-4 border-l-cg_gold">
-          <p class="text-[11px] font-bold uppercase text-stone-500">Campanha Reserva One (3 Paletes)</p>
-          <p class="text-2xl font-black text-cg_rust mt-1">R$ 21.571,20</p>
-          <p class="text-xs text-stone-500 mt-1">210 caixas • Lucro R$ 5.972,40 • Comissão 2,0%</p>
+          <h3 class="text-sm font-black text-cg_dark mb-2">Tabela Oficial de Metas 2026</h3>
+          <div class="overflow-x-auto max-h-48 no-scrollbar rounded-xl border border-stone-200">
+            <table class="w-full text-left text-xs bg-white">
+              <thead class="sticky top-0 bg-stone-100 shadow-sm z-10 text-stone-600 uppercase font-bold">
+                <tr><th class="p-2">Mês</th><th class="p-2 text-right">Valor da Meta</th></tr>
+              </thead>
+              <tbody id="tbody-tabela-metas" class="divide-y divide-stone-100"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+            <div class="card p-4 border-l-4 border-l-cg_green flex flex-col justify-center h-full">
+              <p class="text-[11px] font-bold uppercase text-stone-500">Comissão Projetada (21% MB)</p>
+              <p id="m-val-com" class="text-2xl font-black text-cg_green mt-1">R$ 0,00</p>
+              <p id="m-sub-com" class="text-xs text-stone-500 mt-1">Calculando...</p>
+            </div>
+            
+            <div class="card p-4 border-l-4 border-l-amber-500">
+              <p class="text-[11px] font-bold uppercase text-stone-500">Campanha Reserva One (3 Paletes)</p>
+              <p class="text-2xl font-black text-cg_rust mt-1">R$ 21.571,20</p>
+              <p class="text-xs text-stone-500 mt-1">210 caixas • Lucro R$ 5.972,40 • Comissão 2,0%</p>
+            </div>
         </div>
       </div>
 
@@ -1380,308 +1381,19 @@
       window.location.reload(true);
     }
 
+    
     function renderMetas() {
-      const fAno = document.getElementById('meta-ano').value;
-      const fMes = document.getElementById('meta-mes').value;
+      // 1. Obter Valores e Meses Selecionados
+      let fAno = document.getElementById('meta-ano').value;
+      let fMes = document.getElementById('meta-mes').value;
       
-      const filtered = MONTHLY_RECORDS.filter(r => {
-        if (fAno !== 'TODOS' && r.ano !== fAno) return false;
-        if (fMes !== 'TODOS' && r.mes !== fMes) return false;
-        return true;
-      });
-
-      const totFat = filtered.reduce((s, r) => s + r.fat, 0);
-      const totLucro = filtered.reduce((s, r) => s + r.lucro, 0);
-      const mb = totFat > 0 ? (totLucro / totFat) * 100 : 0;
+      let anoFiltro = fAno === 'TODOS' ? '2026' : fAno;
+      let mesesEscopo = fMes === 'TODOS' ? ['TODOS'] : [fMes];
       
-      let aliq = 0.005;
-      let fText = "15% a 15,99%";
-      if (mb >= 25) { aliq = 0.020; fText = "Acima de 25%"; }
-      else if (mb >= 20) { aliq = 0.015; fText = "20% a 24,99%"; }
-      else if (mb >= 16) { aliq = 0.010; fText = "16% a 19,99%"; }
-      else if (mb < 15) { aliq = 0; fText = "Abaixo de 15% (Zero)"; }
-      
-      const mesesQtd = filtered.length > 0 ? filtered.length : 1;
-      const metaPeriodo = 175100 * (fMes === 'TODOS' ? mesesQtd : 1); 
-      
-      const pctAlcancado = metaPeriodo > 0 ? (totFat / metaPeriodo) * 100 : 0;
-      const pctFormatado = pctAlcancado.toFixed(1).replace('.', ',') + '%';
-      const falta = metaPeriodo - totFat;
-      
-      document.getElementById('m-val-fat').textContent = fmtBRL(totFat);
-      document.getElementById('m-val-meta').textContent = fmtBRL(metaPeriodo);
-      
-      const pctEl = document.getElementById('m-pct-meta');
-      pctEl.textContent = pctFormatado;
-      const barEl = document.getElementById('m-bar-meta');
-      barEl.style.width = Math.min(pctAlcancado, 100) + '%';
-      
-      if (pctAlcancado >= 100) {
-          pctEl.className = 'text-cg_green font-black';
-          barEl.className = 'bg-cg_green h-2 rounded-full transition-all duration-500';
-          document.getElementById('m-sub-fat').innerHTML = `🎉 <strong class="text-cg_green">Meta Batida!</strong> Parabéns!`;
-      } else {
-          pctEl.className = 'text-cg_rust font-black';
-          barEl.className = 'bg-cg_rust h-2 rounded-full transition-all duration-500';
-          document.getElementById('m-sub-fat').innerHTML = `Faltam <span class="text-red-500 font-bold">${fmtBRL(falta)}</span> para atingir a meta.`;
-      }
-
-      document.getElementById('m-val-com').textContent = fmtBRL(totFat * aliq);
-      document.getElementById('m-sub-com').textContent = `Margem: ${fmtPct(mb)} (Alíquota ${fmtPct(aliq*100)} - ${fText})`;
-      
-      const anoTxt = fAno === 'TODOS' ? 'Geral' : fAno;
-      const mesTxt = fMes === 'TODOS' ? 'Todos os Meses' : `Mês ${fMes}`;
-      document.getElementById('lbl-meta-periodo').textContent = `Período Filtrado: ${anoTxt} / ${mesTxt}`;
-    }
-
-
-    // --- NOVO ESTADO GLOBAL DO DASHBOARD ---
-    let dashFilters = {
-      ano: 'TODOS',
-      meses: ['TODOS'],
-      curva: null,
-      categoria: null,
-      mesClick: null,
-      search: ''
-    };
-    
-    let dashSearchTimeout = null;
-
-    function updateDashState(key, val) {
-      if(key === 'ano') dashFilters.ano = val;
-      renderDashboard();
-    }
-
-    function updateDashMeses(checkbox) {
-      if (checkbox.value === 'TODOS') {
-        const cbs = document.querySelectorAll('.mes-checkbox');
-        cbs.forEach(cb => { if(cb.value !== 'TODOS') cb.checked = false; });
-        dashFilters.meses = ['TODOS'];
-      } else {
-        const cbTodos = document.querySelector('.mes-checkbox[value="TODOS"]');
-        if(cbTodos) cbTodos.checked = false;
-        
-        const cbs = Array.from(document.querySelectorAll('.mes-checkbox:checked'));
-        dashFilters.meses = cbs.map(cb => cb.value);
-        if (dashFilters.meses.length === 0) {
-            dashFilters.meses = ['TODOS'];
-            if(cbTodos) cbTodos.checked = true;
-        }
-      }
-      
-      const lbl = document.getElementById('lbl-meses-selecionados');
-      if (dashFilters.meses.includes('TODOS')) {
-          lbl.textContent = 'Todos os Meses';
-      } else {
-          lbl.textContent = dashFilters.meses.length + ' mês(es) selec.';
-      }
-      
-      renderDashboard();
-    }
-
-    function debounceDashSearch(val) {
-      clearTimeout(dashSearchTimeout);
-      dashSearchTimeout = setTimeout(() => {
-          dashFilters.search = val.toLowerCase().trim();
-          renderDashboard();
-      }, 300);
-    }
-    
-    function clearDashFilters() {
-      dashFilters = { ano: 'TODOS', meses: ['TODOS'], curva: null, categoria: null, mesClick: null, search: '' };
-      document.getElementById('dash-ano').value = 'TODOS';
-      document.getElementById('dash-global-search').value = '';
-      
-      const cbs = document.querySelectorAll('.mes-checkbox');
-      cbs.forEach(cb => cb.checked = (cb.value === 'TODOS'));
-      document.getElementById('lbl-meses-selecionados').textContent = 'Todos os Meses';
-      
-      renderDashboard();
-    }
-    
-    function removeFilter(key) {
-       dashFilters[key] = null;
-       renderDashboard();
-    }
-
-    function renderActiveFilterChips() {
-        const container = document.getElementById('dash-active-filters');
-        let html = '';
-        
-        if (dashFilters.curva) {
-            html += `<span class="bg-cg_dark text-cg_gold px-2.5 py-1 rounded-full text-[10px] font-black cursor-pointer shadow-sm hover:opacity-80" onclick="removeFilter('curva')">Curva: ${dashFilters.curva} ✕</span>`;
-        }
-        if (dashFilters.categoria) {
-            html += `<span class="bg-cg_rust text-white px-2.5 py-1 rounded-full text-[10px] font-black cursor-pointer shadow-sm hover:opacity-80" onclick="removeFilter('categoria')">Categoria: ${dashFilters.categoria} ✕</span>`;
-        }
-        if (dashFilters.mesClick) {
-            html += `<span class="bg-cg_green text-white px-2.5 py-1 rounded-full text-[10px] font-black cursor-pointer shadow-sm hover:opacity-80" onclick="removeFilter('mesClick')">Mês: ${dashFilters.mesClick} ✕</span>`;
-        }
-        
-        container.innerHTML = html;
-        
-        const btnClear = document.getElementById('btn-clear-dash');
-        const hasFilters = dashFilters.ano !== 'TODOS' || !dashFilters.meses.includes('TODOS') || dashFilters.curva || dashFilters.categoria || dashFilters.mesClick || dashFilters.search !== '';
-        if (btnClear) {
-            if (hasFilters) btnClear.classList.remove('hidden');
-            else btnClear.classList.add('hidden');
-        }
-    }
-
-    function computeDashboardData() {
-        // Filtro Temporal Global
-        let activeRecords = MONTHLY_RECORDS.filter(r => {
-            if (dashFilters.ano !== 'TODOS' && r.ano !== dashFilters.ano) return false;
-            if (!dashFilters.meses.includes('TODOS') && !dashFilters.meses.includes(r.mes)) return false;
-            if (dashFilters.mesClick && r.label !== dashFilters.mesClick) return false;
-            // A busca global pode cruzar com o mês se o usuário digitar "mar", "2026", etc
-            if (dashFilters.search && (r.label.toLowerCase().includes(dashFilters.search) || r.ano.includes(dashFilters.search))) {
-                // Se der match direto no mês/ano, mantemos. Não barramos os outros ainda pra não quebrar a busca de produto.
-            }
-            return true;
-        });
-
-        const globalTotFat = MONTHLY_RECORDS.reduce((s, r) => s + r.fat, 0);
-        let rawFat = activeRecords.reduce((s, r) => s + r.fat, 0);
-        let rawLucro = activeRecords.reduce((s, r) => s + r.lucro, 0);
-        let rawPed = activeRecords.reduce((s, r) => s + r.pedidos, 0);
-
-        // Multiplicadores (Drill-down e Proporção)
-        // Se a busca global focar em categorias ou curva, afeta os totais!
-        let ratioCat = 1;
-        let catsOriginals = {
-            'Queijos': 0.35, 'Manteigas': 0.25, 'TEIXEIRA - Queijo Ralado': 0.18, 
-            'DELICIA NORDESTINA - Biscoitos': 0.12, 'Pão de Alho Reserva One': 0.07, 'CODORNA - Ovos Conserva': 0.03
-        };
-        
-        let targetCat = dashFilters.categoria;
-        if (!targetCat && dashFilters.search) {
-            let sq = dashFilters.search;
-            let foundCat = Object.keys(catsOriginals).find(k => k.toLowerCase().includes(sq));
-            if (foundCat) targetCat = foundCat;
-        }
-
-        if (targetCat) {
-            let cKey = Object.keys(catsOriginals).find(k => k.includes(targetCat) || targetCat.includes(k));
-            if (cKey) ratioCat = catsOriginals[cKey];
-        }
-
-        let ratioCurva = 1;
-        const abcOriginals = { 'Curva A': 0.80, 'Curva B': 0.15, 'Curva C': 0.05 };
-        let targetCurva = dashFilters.curva;
-        if (!targetCurva && dashFilters.search) {
-            let foundCurva = Object.keys(abcOriginals).find(k => k.toLowerCase().includes(dashFilters.search));
-            if (foundCurva) targetCurva = foundCurva;
-        }
-
-        if (targetCurva && abcOriginals[targetCurva]) {
-            ratioCurva = abcOriginals[targetCurva];
-        }
-
-        let finalRatio = ratioCat * ratioCurva;
-        let finalFat = rawFat * finalRatio;
-        let finalLucro = rawLucro * finalRatio;
-        let finalPed = rawPed * finalRatio;
-        
-        // Multiplicador Proporcional do tempo para Produto/Clientes (já que não temos o log mensal real deles)
-        let timeRatio = globalTotFat > 0 ? (rawFat / globalTotFat) : 1;
-
-        return {
-            fat: finalFat,
-            lucro: finalLucro,
-            pedidos: Math.round(finalPed),
-            records: activeRecords,
-            timeRatio: timeRatio,
-            ratioCat: ratioCat,
-            ratioCurva: ratioCurva
-        };
-    }
-
-    
-    // --- TABELA OFICIAL DE METAS (ÚNICA FONTE DE VERDADE — PARTE 7) ---
-    const OFFICIAL_METAS_2026 = {
-      "01": 93450.0,
-      "02": 90400.0,
-      "03": 90300.0,
-      "04": 112450.0,
-      "05": 123300.0,
-      "06": 124350.0,
-      "07": 128800.0,
-      "08": 144250.0,
-      "09": 145000.0,
-      "10": 170600.0,
-      "11": 175100.0,
-      "12": 172600.0
-    };
-
-    // Função Única de Cálculo de Meta (Parte 10)
-    function calculateMeta(periodoFiltro, escopoMeses) {
-      // Validação da tabela de metas (Parte 7.5)
-      let totalMeta = 0;
-      let totalRealizado = 0;
-      let mesesValidos = 0;
-      let mesesSemMeta = [];
-
-      // Determinar quais meses estão no escopo
-      let targetMonths = [];
-      if (escopoMeses.includes('TODOS')) {
-          targetMonths = ['01','02','03','04','05','06','07','08','09','10','11','12'];
-      } else {
-          targetMonths = escopoMeses;
-      }
-
-      targetMonths.forEach(m => {
-          let mMeta = OFFICIAL_METAS_2026[m];
-          if (mMeta === undefined || mMeta === null || isNaN(mMeta) || mMeta <= 0) {
-              console.warn(`[VALIDAÇÃO META] Mês ${m} sem meta cadastrada ou inválida.`);
-              mesesSemMeta.push(m);
-          } else {
-              totalMeta += mMeta;
-              mesesValidos++;
-          }
-      });
-
-      // Calcular realizado correspondente na base de registros
-      let matchedRecords = MONTHLY_RECORDS.filter(r => {
-          if (periodoFiltro !== 'TODOS' && r.ano !== periodoFiltro) return false;
-          if (!escopoMeses.includes('TODOS') && !escopoMeses.includes(r.mes)) return false;
-          return true;
-      });
-
-      totalRealizado = matchedRecords.reduce((s, r) => s + r.fat, 0);
-
-      // Se for apenas 1 mês, podemos calcular dias úteis para projeção (Parte 8.3)
-      let diasUteisTotais = 22; // média padrão
-      let diasUteisDecorridos = 15; // simulado no mês corrente
-      let projecao = totalRealizado;
-
-      if (targetMonths.length === 1 && totalRealizado > 0) {
-          // Projeção do mês = realizado / dias decorridos * dias totais
-          projecao = (totalRealizado / diasUteisDecorridos) * diasUteisTotais;
-      } else if (targetMonths.length > 1 && totalRealizado > 0) {
-          // Projeção proporcional
-          projecao = (totalRealizado / targetMonths.length) * 12;
-      }
-
-      const percentual = totalMeta > 0 ? (totalRealizado / totalMeta) * 100 : 0;
-      const faltante = Math.max(0, totalMeta - totalRealizado);
-
-      return {
-          meta: totalMeta,
-          realizado: totalRealizado,
-          percentual: percentual,
-          faltante: faltante,
-          projecao: projecao,
-          mesesSemMeta: mesesSemMeta
-      };
-    }
-
-    let metaCarouselIndex = 0;
-
-    function renderMetaWidgetAndCarousel() {
-      // 1. Meta do Ano (Soma das 12 metas mensais de 2026 - Parte 7.3)
+      let metaMesObj = calculateMeta(anoFiltro, mesesEscopo);
       let metaAnoObj = calculateMeta('2026', ['TODOS']);
-      
+
+      // 2. Renderizar Card Ano 2026
       document.getElementById('mw-ano-meta').textContent = fmtBRL(metaAnoObj.meta);
       document.getElementById('mw-ano-feito').textContent = fmtBRL(metaAnoObj.realizado);
       document.getElementById('mw-ano-pct').textContent = fmtPct(metaAnoObj.percentual);
@@ -1689,35 +1401,35 @@
       
       const barAno = document.getElementById('mw-ano-bar');
       barAno.style.width = Math.min(metaAnoObj.percentual, 100) + '%';
-      if (metaAnoObj.percentual >= 100) barAno.className = 'h-3 rounded-full transition-all duration-500 bg-cg_green';
-      else if (metaAnoObj.percentual >= 70) barAno.className = 'h-3 rounded-full transition-all duration-500 bg-cg_gold';
-      else barAno.className = 'h-3 rounded-full transition-all duration-500 bg-cg_rust';
+      if (metaAnoObj.percentual >= 100) barAno.className = 'h-4 rounded-full transition-all duration-500 bg-cg_green';
+      else if (metaAnoObj.percentual >= 70) barAno.className = 'h-4 rounded-full transition-all duration-500 bg-cg_gold';
+      else barAno.className = 'h-4 rounded-full transition-all duration-500 bg-cg_rust';
 
       const projAnoEl = document.getElementById('mw-ano-proj');
       const projAnoStatus = document.getElementById('mw-ano-proj-status');
-      projAnoEl.innerHTML = `Projeção Anual: <strong>${fmtBRL(metaAnoObj.projecao)}</strong>`;
-      if (metaAnoObj.projecao >= metaAnoObj.meta) {
-          projAnoStatus.className = 'text-cg_green font-bold';
-          projAnoStatus.textContent = '✓ Acima da meta';
-      } else {
-          projAnoStatus.className = 'text-red-400 font-bold';
-          projAnoStatus.textContent = '⚠️ Projeção abaixo da meta';
+      if(projAnoEl) {
+        projAnoEl.innerHTML = `<span>Projeção Final: <strong>${fmtBRL(metaAnoObj.projecao)}</strong></span>`;
+        if (metaAnoObj.projecao >= metaAnoObj.meta) {
+            projAnoStatus.className = 'text-cg_green font-black';
+            projAnoStatus.textContent = '✓ No alvo';
+        } else {
+            projAnoStatus.className = 'text-red-500 font-black';
+            projAnoStatus.textContent = '⚠️ Projeção abaixo';
+        }
       }
 
-      // 2. Meta do Mês (respeita os filtros ativos da Parte 1)
-      let mesEscopo = dashFilters.meses;
-      let anoEscopo = dashFilters.ano;
-      let metaMesObj = calculateMeta(anoEscopo, mesEscopo);
-
-      let mesTituloTxt = 'MÊS (FILTRADO)';
-      if (mesEscopo.length === 1 && !mesEscopo.includes('TODOS')) {
-          const nomesMeses = {'01':'Janeiro','02':'Fevereiro','03':'Março','04':'Abril','05':'Maio','06':'Junho','07':'Julho','08':'Agosto','09':'Setembro','10':'Outubro','11':'Novembro','12':'Dezembro'};
-          mesTituloTxt = `MÊS: ${nomesMeses[mesEscopo[0]] || mesEscopo[0]}`;
-      } else if (!mesEscopo.includes('TODOS')) {
-          mesTituloTxt = `PERÍODO: ${mesEscopo.length} MÊS(ES)`;
+      // 3. Renderizar Card Mês
+      const nomesMeses = {'01':'Janeiro','02':'Fevereiro','03':'Março','04':'Abril','05':'Maio','06':'Junho','07':'Julho','08':'Agosto','09':'Setembro','10':'Outubro','11':'Novembro','12':'Dezembro'};
+      let mesTituloTxt = 'MÊS CORRENTE';
+      if (mesesEscopo.length === 1 && !mesesEscopo.includes('TODOS')) {
+          mesTituloTxt = `MÊS: ${nomesMeses[mesesEscopo[0]] || mesesEscopo[0]}`;
+      } else if (!mesesEscopo.includes('TODOS')) {
+          mesTituloTxt = `PERÍODO: ${mesesEscopo.length} MÊS(ES)`;
       }
 
-      document.getElementById('mw-mes-titulo').textContent = mesTituloTxt;
+      const elMesTitulo = document.getElementById('mw-mes-titulo');
+      if (elMesTitulo) elMesTitulo.textContent = mesTituloTxt;
+      
       document.getElementById('mw-mes-meta').textContent = metaMesObj.meta > 0 ? fmtBRL(metaMesObj.meta) : 'Meta não cadastrada';
       document.getElementById('mw-mes-feito').textContent = fmtBRL(metaMesObj.realizado);
       document.getElementById('mw-mes-pct').textContent = metaMesObj.meta > 0 ? fmtPct(metaMesObj.percentual) : 'N/D';
@@ -1726,134 +1438,100 @@
       const barMes = document.getElementById('mw-mes-bar');
       if (metaMesObj.meta === 0) {
           barMes.style.width = '0%';
-          barMes.className = 'h-3 rounded-full transition-all duration-500 bg-stone-500';
+          barMes.className = 'h-4 rounded-full transition-all duration-500 bg-stone-300';
       } else {
           barMes.style.width = Math.min(metaMesObj.percentual, 100) + '%';
-          if (metaMesObj.percentual >= 100) barMes.className = 'h-3 rounded-full transition-all duration-500 bg-cg_green';
-          else if (metaMesObj.percentual >= 70) barMes.className = 'h-3 rounded-full transition-all duration-500 bg-cg_gold';
-          else barMes.className = 'h-3 rounded-full transition-all duration-500 bg-cg_rust';
+          if (metaMesObj.percentual >= 100) barMes.className = 'h-4 rounded-full transition-all duration-500 bg-cg_green';
+          else if (metaMesObj.percentual >= 70) barMes.className = 'h-4 rounded-full transition-all duration-500 bg-cg_gold';
+          else barMes.className = 'h-4 rounded-full transition-all duration-500 bg-cg_rust';
       }
 
       const projMesEl = document.getElementById('mw-mes-proj');
       const projMesStatus = document.getElementById('mw-mes-proj-status');
-      projMesEl.innerHTML = `Projeção Período: <strong>${fmtBRL(metaMesObj.projecao)}</strong>`;
-      if (metaMesObj.meta > 0 && metaMesObj.projecao >= metaMesObj.meta) {
-          projMesStatus.className = 'text-cg_green font-bold';
-          projMesStatus.textContent = '✓ No alvo';
-      } else {
-          projMesStatus.className = 'text-cg_rust font-bold';
-          projMesStatus.textContent = '⚠️ Projeção abaixo';
+      if (projMesEl) {
+          projMesEl.innerHTML = `<span>Projeção Mês: <strong>${fmtBRL(metaMesObj.projecao)}</strong></span>`;
+          if (metaMesObj.meta > 0 && metaMesObj.projecao >= metaMesObj.meta) {
+              projMesStatus.className = 'text-cg_green font-black';
+              projMesStatus.textContent = '✓ No alvo';
+          } else {
+              projMesStatus.className = 'text-cg_rust font-black';
+              projMesStatus.textContent = '⚠️ Projeção abaixo';
+          }
       }
 
-      // 3. Renderizar Carrossel de Metas (Parte 9)
+      // 4. Calcular Tabela de Comissão Projetada
+      let mb = metaMesObj.realizado > 0 ? ((metaMesObj.realizado - (metaMesObj.realizado * 0.78)) / metaMesObj.realizado) * 100 : 0; // Aproximação temporária da MB geral do mês
+      let aliq = 0.005;
+      let fText = "15% a 15,99%";
+      if (mb >= 25) { aliq = 0.020; fText = "Acima de 25%"; }
+      else if (mb >= 20) { aliq = 0.015; fText = "20% a 24,99%"; }
+      else if (mb >= 16) { aliq = 0.010; fText = "16% a 19,99%"; }
+      else if (mb < 15) { aliq = 0; fText = "Abaixo de 15% (Zero)"; }
+      
+      const elCom = document.getElementById('m-val-com');
+      const elSubCom = document.getElementById('m-sub-com');
+      if (elCom) {
+          elCom.textContent = fmtBRL(metaMesObj.realizado * aliq);
+          elSubCom.textContent = `Margem simulada: ${fmtPct(mb)} (Alíquota ${fmtPct(aliq*100)} - ${fText})`;
+      }
+
+      // 5. Renderizar Tabela Vertical Oficial
+      const tbodyMetas = document.getElementById('tbody-tabela-metas');
+      if (tbodyMetas) {
+          let htmlTabela = '';
+          const mesesOrder = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+          mesesOrder.forEach(m => {
+              const valor = OFFICIAL_METAS_2026[m];
+              const isActive = (mesesEscopo.includes(m) || mesesEscopo.includes('TODOS')) ? 'bg-amber-50 font-bold' : '';
+              const textValor = (valor > 0) ? fmtBRL(valor) : '<span class="text-stone-400">Não cadastrada</span>';
+              htmlTabela += `<tr class="${isActive} border-b border-stone-100 hover:bg-stone-50"><td class="p-2">${nomesMeses[m]}</td><td class="p-2 text-right text-cg_dark">${textValor}</td></tr>`;
+          });
+          htmlTabela += `<tr class="bg-cg_dark text-white font-black"><td class="p-2">TOTAL ANO</td><td class="p-2 text-right">${fmtBRL(metaAnoObj.meta)}</td></tr>`;
+          tbodyMetas.innerHTML = htmlTabela;
+      }
+
       renderMetaCarousel();
+      updateGlobalHeaderMeta();
     }
+    
+    function updateGlobalHeaderMeta() {
+        const today = new Date();
+        const curMonth = String(today.getMonth() + 1).padStart(2, '0');
+        const nomesCurtos = {'01':'JAN','02':'FEV','03':'MAR','04':'ABR','05':'MAI','06':'JUN','07':'JUL','08':'AGO','09':'SET','10':'OUT','11':'NOV','12':'DEZ'};
+        
+        let metaAnoObj = calculateMeta('2026', ['TODOS']);
+        let metaMesObj = calculateMeta('2026', [curMonth]);
 
-    function renderMetaCarousel() {
-      const container = document.getElementById('meta-carousel-cards');
-      const mesesList = [
-        {id:'01', nome:'Jan/26'}, {id:'02', nome:'Fev/26'}, {id:'03', nome:'Mar/26'},
-        {id:'04', nome:'Abr/26'}, {id:'05', nome:'Mai/26'}, {id:'06', nome:'Jun/26'},
-        {id:'07', nome:'Jul/26'}, {id:'08', nome:'Ago/26'}, {id:'09', nome:'Set/26'},
-        {id:'10', nome:'Out/26'}, {id:'11', nome:'Nov/26'}, {id:'12', nome:'Dez/26'}
-      ];
-
-      // Card Acumulado Ano no Início
-      let anoObj = calculateMeta('2026', ['TODOS']);
-      let htmlCards = `
-        <div onclick="clearDashFilters()" class="shrink-0 w-52 p-3.5 rounded-xl bg-stone-900 text-white border-2 border-cg_gold cursor-pointer hover:scale-102 transition flex flex-col justify-between shadow-sm">
-          <div>
-            <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-cg_gold text-cg_dark">ACUMULADO ANO</span>
-            <p class="text-xs font-black mt-2">Visão Geral 2026</p>
-            <p class="text-[11px] text-stone-300 mt-1">Meta: <strong>${fmtBRL(anoObj.meta)}</strong></p>
-            <p class="text-[11px] text-stone-300">Feito: <strong class="text-cg_green">${fmtBRL(anoObj.realizado)}</strong></p>
-          </div>
-          <div class="mt-3 pt-2 border-t border-stone-700 text-[11px] flex justify-between font-bold">
-            <span>Atingido:</span>
-            <span class="${anoObj.percentual >= 100 ? 'text-cg_green' : 'text-cg_gold'}">${fmtPct(anoObj.percentual)}</span>
-          </div>
-        </div>
-      `;
-
-      mesesList.forEach(m => {
-        let mMeta = OFFICIAL_METAS_2026[m.id] || 0;
-        let rec = MONTHLY_RECORDS.find(r => r.ano === '2026' && r.mes === m.id);
-        let realizado = rec ? rec.fat : 0;
-        let pct = mMeta > 0 ? (realizado / mMeta) * 100 : 0;
-        let diff = realizado - mMeta;
-
-        let isCurrent = m.id === '11'; // Nov/26 como mês corrente
-        let isClosed = parseInt(m.id) < 11;
-        let isFuture = parseInt(m.id) > 11;
-
-        let borderClass = 'border-stone-200';
-        let bgClass = 'bg-stone-50';
-        let badgeBg = 'bg-stone-200 text-stone-700';
-        let badgeTxt = 'Fechado';
-
-        if (isCurrent) {
-            borderClass = 'border-2 border-cg_rust shadow-md';
-            bgClass = 'bg-white ring-2 ring-cg_rust/20';
-            badgeBg = 'bg-cg_rust text-white';
-            badgeTxt = 'Mês Corrente';
-        } else if (isClosed) {
-            if (pct >= 100) {
-                badgeBg = 'bg-emerald-100 text-emerald-800';
-                badgeTxt = 'Meta Batida ✓';
-            } else {
-                badgeBg = 'bg-red-100 text-red-800';
-                badgeTxt = 'Não Batida ✕';
-            }
-        } else {
-            badgeBg = 'bg-stone-200 text-stone-600';
-            badgeTxt = 'Futuro';
+        const elAnoPct = document.getElementById('hdr-ano-pct');
+        const elAnoBar = document.getElementById('hdr-ano-bar');
+        if (elAnoPct) {
+            elAnoPct.textContent = fmtPct(metaAnoObj.percentual);
+            elAnoBar.style.width = Math.min(metaAnoObj.percentual, 100) + '%';
+            if (metaAnoObj.percentual >= 100) elAnoPct.className = 'text-cg_green';
+            else elAnoPct.className = 'text-cg_gold';
         }
 
-        htmlCards += `
-          <div onclick="selectCarouselMonth('${m.id}')" class="shrink-0 w-48 p-3.5 rounded-xl ${bgClass} border ${borderClass} cursor-pointer hover:shadow-md transition flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between gap-1">
-                <span class="text-xs font-black text-cg_dark">${m.nome}</span>
-                <span class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${badgeBg}">${badgeTxt}</span>
-              </div>
-              <div class="mt-2 text-[11px] space-y-0.5">
-                <div class="flex justify-between text-stone-500"><span>Meta:</span><strong>${fmtBRL(mMeta)}</strong></div>
-                <div class="flex justify-between text-stone-700"><span>Realizado:</span><strong>${fmtBRL(realizado)}</strong></div>
-              </div>
-            </div>
-            <div class="mt-3 pt-2 border-t border-stone-200 text-[11px]">
-              <div class="flex justify-between items-center">
-                <span class="text-stone-500 font-bold">Atingido:</span>
-                <strong class="${pct >= 100 ? 'text-cg_green' : (pct >= 70 ? 'text-amber-600' : 'text-red-600')}">${fmtPct(pct)}</strong>
-              </div>
-              <div class="w-full bg-stone-200 rounded-full h-1.5 mt-1.5 overflow-hidden">
-                <div class="h-1.5 rounded-full ${pct >= 100 ? 'bg-cg_green' : 'bg-cg_rust'}" style="width: ${Math.min(pct, 100)}%"></div>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = htmlCards;
+        const elMesLbl = document.getElementById('hdr-mes-label');
+        const elMesPct = document.getElementById('hdr-mes-pct');
+        const elMesBar = document.getElementById('hdr-mes-bar');
+        
+        if (elMesLbl) {
+            elMesLbl.innerHTML = `${nomesCurtos[curMonth]}/26: <strong id="hdr-mes-pct" class="text-cg_green">${fmtPct(metaMesObj.percentual)}</strong>`;
+            const novoMesPct = document.getElementById('hdr-mes-pct');
+            if(metaMesObj.meta === 0) {
+                novoMesPct.textContent = 'N/D';
+                novoMesPct.className = 'text-stone-500';
+                elMesBar.style.width = '0%';
+                elMesBar.className = 'h-1 bg-stone-500';
+            } else {
+                elMesBar.style.width = Math.min(metaMesObj.percentual, 100) + '%';
+                if (metaMesObj.percentual >= 100) { novoMesPct.className = 'text-cg_green'; elMesBar.className = 'h-1 bg-cg_green'; }
+                else if (metaMesObj.percentual >= 70) { novoMesPct.className = 'text-cg_gold'; elMesBar.className = 'h-1 bg-cg_gold'; }
+                else { novoMesPct.className = 'text-cg_rust'; elMesBar.className = 'h-1 bg-cg_rust'; }
+            }
+        }
     }
-
-    function selectCarouselMonth(mesId) {
-      dashFilters.ano = '2026';
-      dashFilters.meses = [mesId];
-      // Atualizar UI do dropdown multi-meses se necessário
-      const cbs = document.querySelectorAll('.mes-checkbox');
-      cbs.forEach(cb => {
-          cb.checked = (cb.value === mesId);
-      });
-      document.getElementById('lbl-meses-selecionados').textContent = '1 mês(es) selec.';
-      document.getElementById('dash-ano').value = '2026';
-      renderDashboard();
-    }
-
-    function moveMetaCarousel(dir) {
-      const container = document.getElementById('meta-carousel-cards');
-      if (container) {
-          container.scrollBy({ left: dir * 220, behavior: 'smooth' });
+);
       }
     }
 
@@ -2062,8 +1740,7 @@
       // Atualiza Carrossel sempre que o dash muda
       resetCarousel();
       renderProductProfitabilityTables();
-      renderMetaWidgetAndCarousel();
-    }
+          }
 
     function renderAbcClientTable(dataObj) {
         // Build base client list from ROTA_DATA + NEG_CLIENTS + HIGH_CLIENTS + LOW_CLIENTS
@@ -3114,11 +2791,10 @@ function renderProductProfitabilityTables() {
       checkAppEnvironment();
       renderDashboard();
       renderProductProfitabilityTables();
-      renderMetaWidgetAndCarousel();
-      initRota();
+            initRota();
       initSimulador();
-      renderMetaWidgetAndCarousel();
-      renderCurvaC();
+            renderCurvaC();
+      updateGlobalHeaderMeta();
     };
   </script>
 </body>
