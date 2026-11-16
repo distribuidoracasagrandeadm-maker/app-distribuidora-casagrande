@@ -1716,6 +1716,165 @@
       }
     }
 
+
+    let dashFilters = {
+      ano: 'TODOS',
+      meses: ['TODOS'],
+      curva: null,
+      categoria: null,
+      search: '',
+      mesClick: null
+    };
+
+    function updateDashState(key, val) {
+      if (key === 'ano') dashFilters.ano = val;
+      renderDashboard();
+    }
+
+    function updateDashMeses(checkbox) {
+      const val = checkbox.value;
+      const allCheck = document.querySelector('.mes-checkbox[value="TODOS"]');
+      
+      if (val === 'TODOS') {
+        if (checkbox.checked) {
+          dashFilters.meses = ['TODOS'];
+          document.querySelectorAll('.mes-checkbox').forEach(cb => {
+              if (cb.value !== 'TODOS') cb.checked = false;
+          });
+        } else {
+          checkbox.checked = true; // Prevent unchecking "TODOS" if nothing else is selected
+        }
+      } else {
+        if (checkbox.checked) {
+          if (dashFilters.meses.includes('TODOS')) {
+              dashFilters.meses = [];
+              allCheck.checked = false;
+          }
+          dashFilters.meses.push(val);
+        } else {
+          dashFilters.meses = dashFilters.meses.filter(m => m !== val);
+          if (dashFilters.meses.length === 0) {
+              dashFilters.meses = ['TODOS'];
+              allCheck.checked = true;
+          }
+        }
+      }
+      
+      const lbl = document.getElementById('lbl-meses-selecionados');
+      if (dashFilters.meses.includes('TODOS')) lbl.textContent = 'Todos os Meses';
+      else if (dashFilters.meses.length === 1) lbl.textContent = '1 mês selec.';
+      else lbl.textContent = dashFilters.meses.length + ' meses selec.';
+      
+      renderDashboard();
+    }
+
+    function debounceDashSearch(val) {
+      dashFilters.search = val.trim();
+      renderDashboard();
+    }
+
+    function clearDashFilters() {
+      dashFilters = { ano: 'TODOS', meses: ['TODOS'], curva: null, categoria: null, search: '', mesClick: null };
+      document.getElementById('dash-ano').value = 'TODOS';
+      document.getElementById('dash-global-search').value = '';
+      
+      const allCheck = document.querySelector('.mes-checkbox[value="TODOS"]');
+      if (allCheck) allCheck.checked = true;
+      document.querySelectorAll('.mes-checkbox').forEach(cb => {
+          if (cb.value !== 'TODOS') cb.checked = false;
+      });
+      document.getElementById('lbl-meses-selecionados').textContent = 'Todos os Meses';
+      
+      renderDashboard();
+    }
+
+    function renderActiveFilterChips() {
+      const container = document.getElementById('dash-active-filters');
+      const btnClear = document.getElementById('btn-clear-dash');
+      let html = '';
+      
+      let hasFilters = false;
+      
+      if (dashFilters.mesClick) {
+          hasFilters = true;
+          html += `<span class="px-2 py-1 bg-stone-200 text-stone-700 text-[10px] font-bold rounded-lg flex items-center gap-1">Mês: ${dashFilters.mesClick} <button onclick="dashFilters.mesClick=null; renderDashboard()" class="text-stone-500 hover:text-red-500">✕</button></span>`;
+      }
+      if (dashFilters.curva) {
+          hasFilters = true;
+          html += `<span class="px-2 py-1 bg-cg_gold text-cg_dark text-[10px] font-bold rounded-lg flex items-center gap-1">Curva: ${dashFilters.curva} <button onclick="dashFilters.curva=null; renderDashboard()" class="text-stone-800 hover:text-red-800">✕</button></span>`;
+      }
+      if (dashFilters.categoria) {
+          hasFilters = true;
+          html += `<span class="px-2 py-1 bg-emerald-100 text-emerald-900 text-[10px] font-bold rounded-lg flex items-center gap-1">Cat: ${dashFilters.categoria} <button onclick="dashFilters.categoria=null; renderDashboard()" class="text-emerald-700 hover:text-red-700">✕</button></span>`;
+      }
+      if (dashFilters.search) {
+          hasFilters = true;
+          html += `<span class="px-2 py-1 bg-blue-100 text-blue-900 text-[10px] font-bold rounded-lg flex items-center gap-1">Busca: "${dashFilters.search}" <button onclick="document.getElementById('dash-global-search').value=''; dashFilters.search=''; renderDashboard()" class="text-blue-700 hover:text-red-700">✕</button></span>`;
+      }
+
+      container.innerHTML = html;
+      if (btnClear) {
+          if (hasFilters || dashFilters.ano !== 'TODOS' || !dashFilters.meses.includes('TODOS')) {
+              btnClear.classList.remove('hidden');
+          } else {
+              btnClear.classList.add('hidden');
+          }
+      }
+    }
+
+    function computeDashboardData() {
+      // 1. Filter Records by Ano and Meses
+      let filteredRecords = MONTHLY_RECORDS.filter(r => {
+          if (dashFilters.ano !== 'TODOS' && r.ano !== dashFilters.ano) return false;
+          if (!dashFilters.meses.includes('TODOS') && !dashFilters.meses.includes(r.mes)) return false;
+          return true;
+      });
+      
+      // Handle mesClick drilldown
+      if (dashFilters.mesClick) {
+          filteredRecords = filteredRecords.filter(r => r.label === dashFilters.mesClick);
+      }
+
+      let tFat = filteredRecords.reduce((s, r) => s + r.fat, 0);
+      let tLucro = filteredRecords.reduce((s, r) => s + r.lucro, 0);
+      let tPed = filteredRecords.reduce((s, r) => s + r.pedidos, 0);
+
+      let totalBaseFat = MONTHLY_RECORDS.reduce((s, r) => s + r.fat, 0);
+      let timeRatio = totalBaseFat > 0 ? (tFat / totalBaseFat) : 0;
+
+      let ratioCurva = 1.0;
+      if (dashFilters.curva) {
+          if (dashFilters.curva === 'Curva A') ratioCurva = 0.80;
+          if (dashFilters.curva === 'Curva B') ratioCurva = 0.15;
+          if (dashFilters.curva === 'Curva C') ratioCurva = 0.05;
+      }
+
+      let ratioCat = 1.0;
+      if (dashFilters.categoria) {
+          const catPcts = {
+              'Queijos': 0.35,
+              'Manteigas': 0.25,
+              'TEIXEIRA - Queijo Ralado': 0.18,
+              'DELICIA NORDESTINA - Biscoitos': 0.12,
+              'Pão de Alho Reserva One': 0.07,
+              'CODORNA - Ovos Conserva': 0.03
+          };
+          ratioCat = catPcts[dashFilters.categoria] || 0.10;
+      }
+
+      let rMult = ratioCurva * ratioCat;
+
+      return {
+          records: filteredRecords,
+          fat: tFat * rMult,
+          lucro: tLucro * rMult,
+          pedidos: Math.round(tPed * rMult),
+          timeRatio: timeRatio,
+          ratioCurva: ratioCurva,
+          ratioCat: ratioCat
+      };
+    }
+
     function renderDashboard() {
       const dataObj = computeDashboardData();
       
