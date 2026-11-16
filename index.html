@@ -51,6 +51,10 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
+
+  <!-- Bibliotecas para Gerar PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="min-h-screen flex flex-col pb-28">
 
@@ -637,9 +641,10 @@
             <h3 class="text-xs font-black uppercase text-cg_dark">Itens Lançados no Pedido</h3>
             <p id="cart-cliente-resumo" class="text-xs font-bold text-cg_rust mt-0.5">Destinatário: Pedido Avulso / Balcão</p>
           </div>
-          <div class="flex gap-2">
-            <button onclick="saveOrderHistory()" class="px-3 py-1 rounded-lg bg-cg_dark text-white text-[11px] font-bold">💾 Salvar Pedido</button>
-            <button onclick="sendOrderWhatsApp()" class="px-3 py-1 rounded-lg bg-emerald-600 text-white text-[11px] font-bold">📲 Enviar Resumo WhatsApp</button>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="saveOrderHistory()" class="px-3 py-1.5 rounded-lg bg-cg_dark hover:bg-stone-800 text-white text-[11px] font-bold shadow-sm">💾 Salvar Histórico</button>
+            <button onclick="sendOrderWhatsApp()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold shadow-sm">📲 Resumo (Texto)</button>
+            <button onclick="generateOrderPDF()" class="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-[11px] font-bold shadow-sm">📄 Gerar PDF Oficial</button>
           </div>
         </div>
         <div class="overflow-x-auto">
@@ -1862,6 +1867,163 @@
         alertBox.classList.add('hidden');
       }
     }
+
+    
+    async function generateOrderPDF() {
+      if (cart.length === 0) return alert('Adicione produtos ao pedido para gerar o PDF!');
+
+      // Recupera o objeto jsPDF da janela
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const fmt = (v) => Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+      // Dados da Empresa (Cabeçalho Direito)
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.text("DISTRIBUIDORA CASAGRANDE", 105, 20, { align: "center" });
+
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "normal");
+      const companyInfo = [
+        "DISTRIBUIDORA CASAGRANDE LTDA",
+        "DAS ACACIAS, 360 - JARDIM BOA VISTA - Hortolândia - SP - CEP: 13187-042",
+        "CNPJ: 01.277.472/0001-59   IE: 748359149119",
+        "(19) 2218-4528  |  vendasovoscasagrande@gmail.com"
+      ];
+      doc.text(companyInfo, 105, 26, { align: "center" });
+
+      // Dados do Pedido (Topo Esquerda)
+      const hoje = new Date();
+      const numPedido = Math.floor(1000 + Math.random() * 9000); // Venda XXXX
+      doc.setFont("helvetica", "bold");
+      doc.text(hoje.toLocaleDateString('pt-BR'), 14, 20);
+      doc.text(`Venda ${numPedido}`, 14, 25);
+
+      // Linha separadora
+      doc.setLineWidth(0.5);
+      doc.setDrawColor(200, 200, 200);
+      doc.line(14, 45, 196, 45);
+
+      // Dados do Cliente
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text(currentClient.toUpperCase(), 14, 53);
+
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "normal");
+      doc.text("CNPJ: Não informado no momento", 14, 58);
+      
+      let endCli = "Endereço não cadastrado na base de dados";
+      let telCli = "Sem telefone";
+      
+      // Procura o cliente na lista ALL_CLIENTS para pegar endereço e telefone reais
+      const cliObj = ALL_CLIENTS.find(c => (c.nome + (c.cidade ? ` (${c.cidade})` : '')) === currentClient || c.nome === currentClient);
+      if (cliObj) {
+          const bairroFormatado = cliObj.bairro ? ` - ${cliObj.bairro}` : '';
+          const endCompleto = `${cliObj.endereco || ''}${bairroFormatado} - ${cliObj.cidade || ''}`.trim();
+          if (endCompleto && endCompleto !== '-' && endCompleto !== '- SP') endCli = endCompleto;
+          if (cliObj.telefone) telCli = cliObj.telefone;
+      }
+      
+      doc.text(endCli, 14, 63);
+      doc.text(`Telefone: ${telCli}`, 14, 68);
+
+      // Tabela de Produtos (AutoTable)
+      const tableColumn = ["Qt.", "Produto/Serviço", "Valor unitário", "Subtotal"];
+      const tableRows = [];
+      let totVenda = 0;
+
+      cart.forEach(item => {
+        tableRows.push([
+          item.qtd.toString().replace('.', ','),
+          item.nome,
+          fmt(item.preco),
+          fmt(item.vendaTotal)
+        ]);
+        totVenda += item.vendaTotal;
+      });
+
+      doc.autoTable({
+        startY: 75,
+        head: [tableColumn],
+        body: tableRows,
+        theme: 'plain',
+        headStyles: { fillColor: [240, 240, 240], textColor: 20, fontStyle: 'bold' },
+        styles: { fontSize: 9, cellPadding: 3, lineColor: [220, 220, 220], lineWidth: 0.1 },
+        columnStyles: {
+            0: { halign: 'center', cellWidth: 15 },
+            2: { halign: 'right', cellWidth: 35 },
+            3: { halign: 'right', cellWidth: 35 }
+        }
+      });
+
+      let finalY = doc.lastAutoTable.finalY + 15;
+
+      // Dados Financeiros / Pagamento
+      doc.setFont("helvetica", "bold");
+      doc.text("Condição de pagamento:", 14, finalY);
+      doc.setFont("helvetica", "normal");
+      doc.text("Forma de pagamento: Boleto bancário / PIX (Padrão 28 dias)", 14, finalY + 5);
+
+      const vto = new Date(hoje);
+      vto.setDate(vto.getDate() + 28);
+
+      doc.autoTable({
+        startY: finalY + 10,
+        head: [["Nº", "Vencimento", "Valor (R$)", "Observações"]],
+        body: [
+            ["1", vto.toLocaleDateString('pt-BR'), fmt(totVenda), `Venda ${numPedido}`]
+        ],
+        theme: 'plain',
+        headStyles: { fillColor: [240, 240, 240], textColor: 20, fontStyle: 'bold' },
+        styles: { fontSize: 9, lineColor: [220, 220, 220], lineWidth: 0.1 },
+        margin: { bottom: 35 } 
+      });
+
+      // Totais no final
+      const totalY = doc.lastAutoTable.finalY + 12;
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text(`Total: ${fmt(totVenda)}`, 196, totalY, { align: "right" });
+      doc.text(`Valor líquido: ${fmt(totVenda)}`, 196, totalY + 6, { align: "right" });
+
+      // Rodapé: Paginação
+      const pageCount = doc.internal.getNumberOfPages();
+      for(let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(150, 150, 150);
+        doc.text(`Página ${i} de ${pageCount}`, 196, 285, { align: "right" });
+      }
+
+      // Preparar arquivo para Download ou Compartilhamento nativo WhatsApp
+      const pdfBlob = doc.output('blob');
+      const safeName = currentClient.replace(/[^a-z0-9]/gi, '_').toUpperCase();
+      const fileName = `PEDIDO_${safeName}_Venda_${numPedido}.pdf`;
+
+      // API de Compartilhamento Nativa (Android / iOS / Desktop moderno)
+      if (navigator.share && navigator.canShare) {
+          const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
+          if (navigator.canShare({ files: [file] })) {
+              try {
+                  await navigator.share({
+                      files: [file],
+                      title: `Pedido ${numPedido} - Casagrande`,
+                      text: `Olá! Segue em anexo o espelho do pedido gerado pela Distribuidora Casagrande.`
+                  });
+                  return; // Se compartilhar com sucesso, encerra a função
+              } catch (e) {
+                  console.log("Compartilhamento cancelado ou falhou", e);
+              }
+          }
+      }
+
+      // Fallback: Se não suportar API Share, faz o download automático do PDF
+      doc.save(fileName);
+    }
+
 
     function saveOrderHistory() {
       if (cart.length === 0) return alert('Adicione pelo menos 1 produto ao pedido!');
