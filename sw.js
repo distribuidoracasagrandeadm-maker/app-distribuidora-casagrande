@@ -1,4 +1,4 @@
-const CACHE_NAME = 'casagrande-app-nativo-v7';
+const CACHE_NAME = 'casagrande-app-nativo-v8';
 const ASSETS = [
   './',
   './index.html',
