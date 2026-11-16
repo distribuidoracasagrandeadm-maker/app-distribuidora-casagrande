@@ -126,7 +126,7 @@
           <p class="leading-relaxed">Você abriu o arquivo direto dos Downloads/WhatsApp (<code class="font-bold bg-amber-200/70 px-1 rounded">content://</code>). Por segurança do Android e do iPhone, o celular <strong>não libera o botão de Instalar Aplicativo</strong> em arquivos locais.</p>
           <p class="font-bold text-cg_rust">✅ Como ativar o App Nativo + Atualização Automática em 20 segundos:</p>
           <ol class="list-decimal list-inside space-y-1 text-[11px] font-semibold">
-            <li>Baixe o arquivo <strong>Pacote_App_Nativo_Casagrande_v12.zip</strong>.</li>
+            <li>Baixe o arquivo <strong>Pacote_App_Nativo_Casagrande_v14.zip</strong>.</li>
             <li>Toque em um dos botões abaixo (<strong>Tiiny.host</strong> ou <strong>Netlify Drop</strong>) e envie o arquivo <strong>.ZIP</strong>.</li>
             <li>Abra o link <code class="font-bold">https://...</code> gerado: o botão <strong>"Instalar Aplicativo"</strong> vai aparecer na hora com o ícone oficial da Casagrande!</li>
           </ol>
@@ -282,7 +282,7 @@
       <div class="mt-8 pt-4 border-t border-stone-200 flex items-center justify-between text-stone-400 text-[10px]">
         <div>
           <p class="font-bold">Sobre o aplicativo</p>
-          <p>Versão 12</p>
+          <p>Versão 14</p>
         </div>
         <button onclick="checkForUpdates()" class="p-2.5 rounded-full border border-stone-200 hover:bg-stone-100 text-cg_dark shadow-sm flex items-center gap-1 transition">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
@@ -1044,7 +1044,7 @@
 
         <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 space-y-1.5">
           <p class="font-black text-cg_green uppercase">Passo 1 (Única Vez): Ativar o Link Oficial do Aplicativo</p>
-          <p>Suba o arquivo <strong>Pacote_App_Nativo_Casagrande_v12.zip</strong> (sem precisar extrair) em qualquer um destes 2 sites gratuitos:</p>
+          <p>Suba o arquivo <strong>Pacote_App_Nativo_Casagrande_v14.zip</strong> (sem precisar extrair) em qualquer um destes 2 sites gratuitos:</p>
           <div class="grid grid-cols-2 gap-2 my-1.5">
             <a href="https://tiiny.host" target="_blank" class="py-2 px-3 rounded-lg bg-cg_rust text-white font-black text-center">🚀 Ir para Tiiny.host</a>
             <a href="https://app.netlify.com/drop" target="_blank" class="py-2 px-3 rounded-lg bg-cg_dark text-white font-black text-center">☁️ Ir para Netlify Drop</a>
@@ -2003,24 +2003,7 @@
       const safeName = currentClient.replace(/[^a-z0-9]/gi, '_').toUpperCase();
       const fileName = `PEDIDO_${safeName}_Venda_${numPedido}.pdf`;
 
-      // API de Compartilhamento Nativa (Android / iOS / Desktop moderno)
-      if (navigator.share && navigator.canShare) {
-          const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
-          if (navigator.canShare({ files: [file] })) {
-              try {
-                  await navigator.share({
-                      files: [file],
-                      title: `Pedido ${numPedido} - Casagrande`,
-                      text: `Olá! Segue em anexo o espelho do pedido gerado pela Distribuidora Casagrande.`
-                  });
-                  return; // Se compartilhar com sucesso, encerra a função
-              } catch (e) {
-                  console.log("Compartilhamento cancelado ou falhou", e);
-              }
-          }
-      }
-
-      // Fallback: Se não suportar API Share, faz o download automático do PDF
+      // Faz o download direto do PDF (o navegador/celular pedirá para abrir após salvar)
       doc.save(fileName);
     }
 
