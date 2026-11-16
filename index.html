@@ -282,7 +282,7 @@
       <div class="mt-8 pt-4 border-t border-stone-200 flex items-center justify-between text-stone-400 text-[10px]">
         <div>
           <p class="font-bold">Sobre o aplicativo</p>
-          <p>Versão 15</p>
+          <p>Versão 16</p>
         </div>
         <button onclick="checkForUpdates()" class="p-2.5 rounded-full border border-stone-200 hover:bg-stone-100 text-cg_dark shadow-sm flex items-center gap-1 transition">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
@@ -461,7 +461,26 @@
         <div class="card p-4 border-t-4 border-t-cg_gold">
           <h3 class="text-xs md:text-sm font-black uppercase text-cg_dark mb-1">🛒 Participação por Categoria</h3>
           <p class="text-[10px] text-stone-500 mb-3">Distribuição do Mix de Produtos no Faturamento</p>
-          <div class="h-64 flex justify-center"><canvas id="chartCat"></canvas></div>
+          <div class="h-56 flex justify-center"><canvas id="chartCat"></canvas></div>
+          <div class="mt-4 border-t border-stone-100 pt-3">
+            <h4 class="text-[10px] font-black uppercase text-stone-500 mb-2 flex justify-between">
+                <span>Detalhamento de Produtos</span>
+                <span id="cat-prod-count" class="text-cg_dark font-extrabold">0 produtos</span>
+            </h4>
+            <div class="max-h-48 overflow-y-auto no-scrollbar border border-stone-100 rounded-xl">
+              <table class="w-full text-left text-[10px]">
+                <thead class="sticky top-0 bg-stone-50 shadow-sm z-10">
+                  <tr class="text-stone-400 border-b border-stone-200">
+                    <th class="p-2">Produto</th>
+                    <th class="p-2 text-center">Categ.</th>
+                    <th class="p-2 text-right">Fat. (R$)</th>
+                    <th class="p-2 text-right">% Rel.</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-cat-produtos" class="divide-y divide-stone-50 bg-white"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1706,6 +1725,7 @@
 
       // RENDERIZAR TABELA ABC DE CLIENTES
       renderAbcClientTable(dataObj);
+      renderCatProductTable(dataObj);
 
       // Atualiza Carrossel sempre que o dash muda
       resetCarousel();
@@ -1802,6 +1822,69 @@
         
         if(finalClients.length > showLimit) {
             html += `<tr><td colspan="4" class="p-2 text-center text-stone-400 text-[10px] font-bold">+ ${finalClients.length - showLimit} clientes ocultos...</td></tr>`;
+        }
+
+        tbody.innerHTML = html;
+    }
+
+    
+    function renderCatProductTable(dataObj) {
+        // Obter produtos ordenados (faturamento) e filtrados
+        let arr = getSortedProducts();
+        
+        let tableTot = arr.reduce((s, p) => s + p.simFat, 0);
+        let runSum = 0;
+        
+        const tbody = document.getElementById('tbody-cat-produtos');
+        document.getElementById('cat-prod-count').textContent = `${arr.length} produtos`;
+        
+        if (arr.length === 0 || tableTot === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-stone-400 font-bold">Nenhum produto no filtro atual.</td></tr>`;
+            return;
+        }
+
+        // Definindo as cores para as categorias para os badges
+        const getCatBadge = (nome) => {
+            let n = nome.toLowerCase();
+            if (n.includes('queijo') && !n.includes('ralado') && !n.includes('q. r.')) return 'bg-cg_dark text-white';
+            if (n.includes('manteiga') || n.includes('mantemix') || n.includes('mix cremosa')) return 'bg-cg_gold text-cg_dark';
+            if (n.includes('ralado') || n.includes('q. r.') || n.includes('q.r.')) return 'bg-cg_green text-white';
+            if (n.includes('bolacha')) return 'bg-cg_rust text-white';
+            if (n.includes('alho')) return 'bg-purple-600 text-white';
+            if (n.includes('codorna')) return 'bg-blue-500 text-white';
+            return 'bg-stone-200 text-stone-700'; // Default fallback
+        };
+        
+        const getCatName = (nome) => {
+            let n = nome.toLowerCase();
+            if (n.includes('queijo') && !n.includes('ralado') && !n.includes('q. r.')) return 'Queijos';
+            if (n.includes('manteiga') || n.includes('mantemix') || n.includes('mix cremosa')) return 'Manteigas';
+            if (n.includes('ralado') || n.includes('q. r.') || n.includes('q.r.')) return 'Q. Ralado';
+            if (n.includes('bolacha')) return 'Biscoitos';
+            if (n.includes('alho')) return 'P. Alho';
+            if (n.includes('codorna')) return 'Ovos';
+            return 'Outros'; 
+        };
+
+        let html = '';
+        const showLimit = Math.min(50, arr.length);
+        for(let i=0; i < showLimit; i++){
+            let p = arr[i];
+            runSum += p.simFat;
+            let pRel = (p.simFat / tableTot) * 100;
+            let pAcc = (runSum / tableTot) * 100;
+            
+            let bgBadge = getCatBadge(p.nome);
+            let catName = getCatName(p.nome);
+
+            html += `
+              <tr class="hover:bg-stone-50 transition-colors">
+                <td class="p-2 font-bold text-cg_dark max-w-[140px] truncate" title="${p.nome}">${p.nome}</td>
+                <td class="p-2 text-center"><span class="px-1.5 py-0.5 rounded ${bgBadge} text-[9px] font-black uppercase">${catName}</span></td>
+                <td class="p-2 text-right font-black text-stone-600">${fmtBRL(p.simFat)}</td>
+                <td class="p-2 text-right text-stone-500 font-semibold">${pRel.toFixed(1).replace('.',',')}% <span class="text-[9px] text-stone-300 ml-1">(${pAcc.toFixed(1).replace('.',',')}%)</span></td>
+              </tr>
+            `;
         }
 
         tbody.innerHTML = html;
