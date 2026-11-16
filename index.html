@@ -727,14 +727,32 @@
         </div>
         <div class="flex items-center gap-2 text-[10px] font-bold">
             <select id="meta-ano" onchange="renderMetas()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white focus:outline-none"><option value="TODOS">Consolidado</option><option value="2025">2025</option><option value="2026" selected>2026</option></select>
-            <select id="meta-mes" onchange="renderMetas()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white focus:outline-none"><option value="TODOS">Todos os Meses</option><option value="09">Setembro</option><option value="10">Outubro</option><option value="11" selected>Novembro</option><option value="12">Dezembro</option></select>
+            <select id="meta-mes" onchange="renderMetas()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white focus:outline-none"><option value="TODOS">Todos os Meses</option><option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option><option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option><option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option><option value="10">Outubro</option><option value="11" selected>Novembro</option><option value="12">Dezembro</option></select>
         </div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div class="card p-4 border-l-4 border-l-cg_rust">
-          <p class="text-[11px] font-bold uppercase text-stone-500">Meta Global Novembro</p>
-          <p id="m-val-fat" class="text-2xl font-black text-cg_dark mt-1">R$ 175.100,00</p>
-          <p id="m-sub-fat" class="text-xs text-stone-500 mt-1">R$ 166,5k Presencial (A+B) + R$ 8,6k Curva C</p>
+          <p id="m-title-meta" class="text-[11px] font-bold uppercase text-stone-500">Acompanhamento de Meta</p>
+          <div class="mt-2 space-y-1.5">
+            <div class="flex justify-between text-xs">
+              <span class="text-stone-500 font-semibold">Valor da Venda:</span>
+              <strong id="m-val-fat" class="text-cg_dark font-black">R$ 0,00</strong>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-stone-500 font-semibold">Valor da Meta:</span>
+              <strong id="m-val-meta" class="text-stone-600 font-black">R$ 0,00</strong>
+            </div>
+            <div class="flex justify-between text-xs pt-1 border-t border-stone-100">
+              <span class="text-stone-500 font-semibold">Status Atingido:</span>
+              <strong id="m-pct-meta" class="text-cg_rust font-black">0,0%</strong>
+            </div>
+          </div>
+          
+          <!-- Barra de progresso -->
+          <div class="w-full bg-stone-200 rounded-full h-2 mt-2.5 overflow-hidden">
+            <div id="m-bar-meta" class="bg-cg_rust h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <p id="m-sub-fat" class="text-[10px] text-stone-400 mt-1.5 text-center">Calculando...</p>
         </div>
         <div class="card p-4 border-l-4 border-l-cg_green">
           <p class="text-[11px] font-bold uppercase text-stone-500">Comissão Projetada (21% MB)</p>
@@ -801,7 +819,7 @@
           </div>
           <div class="flex flex-wrap items-center gap-2 text-[10px] font-bold shrink-0">
             <select id="dre-ano" onchange="renderAdmin()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white"><option value="TODOS">Consolidado Anos</option><option value="2025">2025</option><option value="2026" selected>2026</option></select>
-            <select id="dre-mes" onchange="renderAdmin()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white"><option value="TODOS" selected>Todos os Meses</option><option value="09">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option></select>
+            <select id="dre-mes" onchange="renderAdmin()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white"><option value="TODOS" selected>Todos os Meses</option><option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option><option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option><option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option></select>
           </div>
         </div>
 
@@ -1241,7 +1259,6 @@
       const totLucro = filtered.reduce((s, r) => s + r.lucro, 0);
       const mb = totFat > 0 ? (totLucro / totFat) * 100 : 0;
       
-      // Calculate avg comm based on MB
       let aliq = 0.005;
       let fText = "15% a 15,99%";
       if (mb >= 25) { aliq = 0.020; fText = "Acima de 25%"; }
@@ -1249,9 +1266,31 @@
       else if (mb >= 16) { aliq = 0.010; fText = "16% a 19,99%"; }
       else if (mb < 15) { aliq = 0; fText = "Abaixo de 15% (Zero)"; }
       
-      document.getElementById('m-val-fat').textContent = fmtBRL(totFat);
-      document.getElementById('m-sub-fat').textContent = `Volume consolidado em ${filtered.length} mês(es)`;
+      const mesesQtd = filtered.length > 0 ? filtered.length : 1;
+      const metaPeriodo = 175100 * (fMes === 'TODOS' ? mesesQtd : 1); 
       
+      const pctAlcancado = metaPeriodo > 0 ? (totFat / metaPeriodo) * 100 : 0;
+      const pctFormatado = pctAlcancado.toFixed(1).replace('.', ',') + '%';
+      const falta = metaPeriodo - totFat;
+      
+      document.getElementById('m-val-fat').textContent = fmtBRL(totFat);
+      document.getElementById('m-val-meta').textContent = fmtBRL(metaPeriodo);
+      
+      const pctEl = document.getElementById('m-pct-meta');
+      pctEl.textContent = pctFormatado;
+      const barEl = document.getElementById('m-bar-meta');
+      barEl.style.width = Math.min(pctAlcancado, 100) + '%';
+      
+      if (pctAlcancado >= 100) {
+          pctEl.className = 'text-cg_green font-black';
+          barEl.className = 'bg-cg_green h-2 rounded-full transition-all duration-500';
+          document.getElementById('m-sub-fat').innerHTML = `🎉 <strong class="text-cg_green">Meta Batida!</strong> Parabéns!`;
+      } else {
+          pctEl.className = 'text-cg_rust font-black';
+          barEl.className = 'bg-cg_rust h-2 rounded-full transition-all duration-500';
+          document.getElementById('m-sub-fat').innerHTML = `Faltam <span class="text-red-500 font-bold">${fmtBRL(falta)}</span> para atingir a meta.`;
+      }
+
       document.getElementById('m-val-com').textContent = fmtBRL(totFat * aliq);
       document.getElementById('m-sub-com').textContent = `Margem: ${fmtPct(mb)} (Alíquota ${fmtPct(aliq*100)} - ${fText})`;
       
