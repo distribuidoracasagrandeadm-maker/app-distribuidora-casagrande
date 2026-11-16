@@ -282,7 +282,7 @@
       <div class="mt-8 pt-4 border-t border-stone-200 flex items-center justify-between text-stone-400 text-[10px]">
         <div>
           <p class="font-bold">Sobre o aplicativo</p>
-          <p>Versão 14</p>
+          <p>Versão 15</p>
         </div>
         <button onclick="checkForUpdates()" class="p-2.5 rounded-full border border-stone-200 hover:bg-stone-100 text-cg_dark shadow-sm flex items-center gap-1 transition">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
@@ -294,38 +294,58 @@
 
     <section id="sec-dash" class="hidden space-y-5">
       <!-- Barra de Filtros Globais (Anos 2025 e 2026 + Meses) -->
-      <div class="card p-4 flex flex-wrap items-center justify-between gap-3 border-l-4 border-l-cg_rust">
-        <div>
-          <h2 class="text-sm font-black text-cg_dark uppercase">Dashboard de Faturamento, Produtos &amp; Rentabilidade</h2>
-          <p id="dash-filter-label" class="text-xs font-bold text-cg_rust mt-0.5">Período selecionado: Consolidado 2025 + 2026 (Todos os Meses)</p>
+      <div class="card p-4 flex flex-col gap-3 border-l-4 border-l-cg_rust">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-black text-cg_dark uppercase">Dashboard de Faturamento, Produtos &amp; Rentabilidade</h2>
+            <p id="dash-filter-label" class="text-xs font-bold text-cg_rust mt-0.5">Período selecionado: Consolidado 2025 + 2026 (Todos os Meses)</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div>
+              <label class="block text-[10px] font-bold uppercase text-stone-400 mb-0.5">Filtrar Ano:</label>
+              <select id="dash-ano" onchange="updateDashState('ano', this.value)" class="border border-stone-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white hover:border-cg_rust focus:outline-none transition-colors">
+                <option value="TODOS">2025 + 2026 (Todos)</option>
+                <option value="2025">Apenas 2025</option>
+                <option value="2026">Apenas 2026</option>
+              </select>
+            </div>
+            <div class="relative">
+              <label class="block text-[10px] font-bold uppercase text-stone-400 mb-0.5">Filtrar Mês (Multi):</label>
+              <details id="dash-mes-dropdown" class="group relative">
+                <summary class="border border-stone-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white hover:border-cg_rust transition-colors cursor-pointer list-none flex justify-between items-center min-w-[150px]">
+                  <span id="lbl-meses-selecionados" class="truncate max-w-[120px]">Todos os Meses</span>
+                  <span class="ml-1 text-[10px]">▼</span>
+                </summary>
+                <div class="absolute top-full right-0 mt-1 w-52 bg-white border border-stone-200 rounded-xl shadow-xl z-50 p-2 max-h-64 overflow-y-auto flex flex-col gap-1 text-xs font-semibold">
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer">
+                    <input type="checkbox" value="TODOS" checked onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Todos os Meses
+                  </label>
+                  <hr class="border-stone-100 my-0.5">
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="01" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Janeiro</label>
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="02" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Fevereiro</label>
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="03" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Março</label>
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="04" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Abril</label>
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="05" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Maio</label>
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="06" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Junho</label>
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="07" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Julho</label>
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="08" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Agosto</label>
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="09" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Setembro</label>
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="10" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Outubro</label>
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="11" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Novembro</label>
+                  <label class="flex items-center gap-2 p-1.5 hover:bg-stone-50 rounded cursor-pointer"><input type="checkbox" value="12" onchange="updateDashMeses(this)" class="mes-checkbox accent-cg_rust" /> Dezembro</label>
+                </div>
+              </details>
+            </div>
+            <div class="mt-4">
+               <button id="btn-clear-dash" onclick="clearDashFilters()" class="hidden h-[30px] px-3 bg-stone-200 hover:bg-stone-300 text-stone-600 font-bold text-[10px] uppercase rounded-xl transition-colors">Limpar Filtros</button>
+            </div>
+          </div>
         </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <div>
-            <label class="block text-[10px] font-bold uppercase text-stone-400">Filtrar Ano:</label>
-            <select id="dash-ano" onchange="renderDashboard()" class="border border-stone-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white">
-              <option value="TODOS">2025 + 2026 (Todos)</option>
-              <option value="2025">Apenas 2025</option>
-              <option value="2026">Apenas 2026</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[10px] font-bold uppercase text-stone-400">Filtrar Mês:</label>
-            <select id="dash-mes" onchange="renderDashboard()" class="border border-stone-300 rounded-xl px-3 py-1.5 text-xs font-bold bg-white">
-              <option value="TODOS">Todos os Meses</option>
-              <option value="01">Janeiro</option>
-              <option value="02">Fevereiro</option>
-              <option value="03">Março</option>
-              <option value="04">Abril</option>
-              <option value="05">Maio</option>
-              <option value="06">Junho</option>
-              <option value="07">Julho</option>
-              <option value="08">Agosto</option>
-              <option value="09">Setembro</option>
-              <option value="10">Outubro</option>
-              <option value="11">Novembro</option>
-              <option value="12">Dezembro</option>
-            </select>
-          </div>
+        
+        <!-- Global Search & Active Tags -->
+        <div class="pt-3 border-t border-stone-100 flex flex-col gap-2">
+            <input type="text" id="dash-global-search" oninput="debounceDashSearch(this.value)" placeholder="🔍 Buscar cliente, produto, categoria ou mês (drill-down rápido)..." class="w-full border border-stone-300 rounded-xl px-3 py-2 text-xs font-bold bg-white hover:border-cg_rust focus:border-cg_rust outline-none transition-colors" />
+            <div id="dash-active-filters" class="flex flex-wrap gap-1.5 empty:hidden"></div>
         </div>
       </div>
 
@@ -417,7 +437,26 @@
         <div class="card p-4 border-t-4 border-t-cg_dark">
           <h3 class="text-xs md:text-sm font-black uppercase text-cg_dark mb-1">📈 Curva ABC de Clientes</h3>
           <p class="text-[10px] text-stone-500 mb-3">Concentração de Faturamento (Pareto)</p>
-          <div class="h-64"><canvas id="chartABC"></canvas></div>
+          <div class="h-56"><canvas id="chartABC"></canvas></div>
+          <div class="mt-4 border-t border-stone-100 pt-3">
+            <h4 class="text-[10px] font-black uppercase text-stone-500 mb-2 flex justify-between">
+                <span>Detalhamento de Clientes</span>
+                <span id="abc-cli-count" class="text-cg_dark font-extrabold">0 clientes</span>
+            </h4>
+            <div class="max-h-48 overflow-y-auto no-scrollbar border border-stone-100 rounded-xl">
+              <table class="w-full text-left text-[10px]">
+                <thead class="sticky top-0 bg-stone-50 shadow-sm z-10">
+                  <tr class="text-stone-400 border-b border-stone-200">
+                    <th class="p-2">Cliente</th>
+                    <th class="p-2 text-center">Curva</th>
+                    <th class="p-2 text-right">Fat. (R$)</th>
+                    <th class="p-2 text-right">% Rel.</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-abc-clientes" class="divide-y divide-stone-50 bg-white"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
         <div class="card p-4 border-t-4 border-t-cg_gold">
           <h3 class="text-xs md:text-sm font-black uppercase text-cg_dark mb-1">🛒 Participação por Categoria</h3>
@@ -1304,89 +1343,237 @@
       document.getElementById('lbl-meta-periodo').textContent = `Período Filtrado: ${anoTxt} / ${mesTxt}`;
     }
 
+
+    // --- NOVO ESTADO GLOBAL DO DASHBOARD ---
+    let dashFilters = {
+      ano: 'TODOS',
+      meses: ['TODOS'],
+      curva: null,
+      categoria: null,
+      mesClick: null,
+      search: ''
+    };
+    
+    let dashSearchTimeout = null;
+
+    function updateDashState(key, val) {
+      if(key === 'ano') dashFilters.ano = val;
+      renderDashboard();
+    }
+
+    function updateDashMeses(checkbox) {
+      if (checkbox.value === 'TODOS') {
+        const cbs = document.querySelectorAll('.mes-checkbox');
+        cbs.forEach(cb => { if(cb.value !== 'TODOS') cb.checked = false; });
+        dashFilters.meses = ['TODOS'];
+      } else {
+        const cbTodos = document.querySelector('.mes-checkbox[value="TODOS"]');
+        if(cbTodos) cbTodos.checked = false;
+        
+        const cbs = Array.from(document.querySelectorAll('.mes-checkbox:checked'));
+        dashFilters.meses = cbs.map(cb => cb.value);
+        if (dashFilters.meses.length === 0) {
+            dashFilters.meses = ['TODOS'];
+            if(cbTodos) cbTodos.checked = true;
+        }
+      }
+      
+      const lbl = document.getElementById('lbl-meses-selecionados');
+      if (dashFilters.meses.includes('TODOS')) {
+          lbl.textContent = 'Todos os Meses';
+      } else {
+          lbl.textContent = dashFilters.meses.length + ' mês(es) selec.';
+      }
+      
+      renderDashboard();
+    }
+
+    function debounceDashSearch(val) {
+      clearTimeout(dashSearchTimeout);
+      dashSearchTimeout = setTimeout(() => {
+          dashFilters.search = val.toLowerCase().trim();
+          renderDashboard();
+      }, 300);
+    }
+    
+    function clearDashFilters() {
+      dashFilters = { ano: 'TODOS', meses: ['TODOS'], curva: null, categoria: null, mesClick: null, search: '' };
+      document.getElementById('dash-ano').value = 'TODOS';
+      document.getElementById('dash-global-search').value = '';
+      
+      const cbs = document.querySelectorAll('.mes-checkbox');
+      cbs.forEach(cb => cb.checked = (cb.value === 'TODOS'));
+      document.getElementById('lbl-meses-selecionados').textContent = 'Todos os Meses';
+      
+      renderDashboard();
+    }
+    
+    function removeFilter(key) {
+       dashFilters[key] = null;
+       renderDashboard();
+    }
+
+    function renderActiveFilterChips() {
+        const container = document.getElementById('dash-active-filters');
+        let html = '';
+        
+        if (dashFilters.curva) {
+            html += `<span class="bg-cg_dark text-cg_gold px-2.5 py-1 rounded-full text-[10px] font-black cursor-pointer shadow-sm hover:opacity-80" onclick="removeFilter('curva')">Curva: ${dashFilters.curva} ✕</span>`;
+        }
+        if (dashFilters.categoria) {
+            html += `<span class="bg-cg_rust text-white px-2.5 py-1 rounded-full text-[10px] font-black cursor-pointer shadow-sm hover:opacity-80" onclick="removeFilter('categoria')">Categoria: ${dashFilters.categoria} ✕</span>`;
+        }
+        if (dashFilters.mesClick) {
+            html += `<span class="bg-cg_green text-white px-2.5 py-1 rounded-full text-[10px] font-black cursor-pointer shadow-sm hover:opacity-80" onclick="removeFilter('mesClick')">Mês: ${dashFilters.mesClick} ✕</span>`;
+        }
+        
+        container.innerHTML = html;
+        
+        const btnClear = document.getElementById('btn-clear-dash');
+        const hasFilters = dashFilters.ano !== 'TODOS' || !dashFilters.meses.includes('TODOS') || dashFilters.curva || dashFilters.categoria || dashFilters.mesClick || dashFilters.search !== '';
+        if (btnClear) {
+            if (hasFilters) btnClear.classList.remove('hidden');
+            else btnClear.classList.add('hidden');
+        }
+    }
+
+    function computeDashboardData() {
+        // Filtro Temporal Global
+        let activeRecords = MONTHLY_RECORDS.filter(r => {
+            if (dashFilters.ano !== 'TODOS' && r.ano !== dashFilters.ano) return false;
+            if (!dashFilters.meses.includes('TODOS') && !dashFilters.meses.includes(r.mes)) return false;
+            if (dashFilters.mesClick && r.label !== dashFilters.mesClick) return false;
+            // A busca global pode cruzar com o mês se o usuário digitar "mar", "2026", etc
+            if (dashFilters.search && (r.label.toLowerCase().includes(dashFilters.search) || r.ano.includes(dashFilters.search))) {
+                // Se der match direto no mês/ano, mantemos. Não barramos os outros ainda pra não quebrar a busca de produto.
+            }
+            return true;
+        });
+
+        const globalTotFat = MONTHLY_RECORDS.reduce((s, r) => s + r.fat, 0);
+        let rawFat = activeRecords.reduce((s, r) => s + r.fat, 0);
+        let rawLucro = activeRecords.reduce((s, r) => s + r.lucro, 0);
+        let rawPed = activeRecords.reduce((s, r) => s + r.pedidos, 0);
+
+        // Multiplicadores (Drill-down e Proporção)
+        // Se a busca global focar em categorias ou curva, afeta os totais!
+        let ratioCat = 1;
+        let catsOriginals = {
+            'Queijos': 0.35, 'Manteigas': 0.25, 'TEIXEIRA - Queijo Ralado': 0.18, 
+            'DELICIA NORDESTINA - Biscoitos': 0.12, 'Pão de Alho Reserva One': 0.07, 'CODORNA - Ovos Conserva': 0.03
+        };
+        
+        let targetCat = dashFilters.categoria;
+        if (!targetCat && dashFilters.search) {
+            let sq = dashFilters.search;
+            let foundCat = Object.keys(catsOriginals).find(k => k.toLowerCase().includes(sq));
+            if (foundCat) targetCat = foundCat;
+        }
+
+        if (targetCat) {
+            let cKey = Object.keys(catsOriginals).find(k => k.includes(targetCat) || targetCat.includes(k));
+            if (cKey) ratioCat = catsOriginals[cKey];
+        }
+
+        let ratioCurva = 1;
+        const abcOriginals = { 'Curva A': 0.80, 'Curva B': 0.15, 'Curva C': 0.05 };
+        let targetCurva = dashFilters.curva;
+        if (!targetCurva && dashFilters.search) {
+            let foundCurva = Object.keys(abcOriginals).find(k => k.toLowerCase().includes(dashFilters.search));
+            if (foundCurva) targetCurva = foundCurva;
+        }
+
+        if (targetCurva && abcOriginals[targetCurva]) {
+            ratioCurva = abcOriginals[targetCurva];
+        }
+
+        let finalRatio = ratioCat * ratioCurva;
+        let finalFat = rawFat * finalRatio;
+        let finalLucro = rawLucro * finalRatio;
+        let finalPed = rawPed * finalRatio;
+        
+        // Multiplicador Proporcional do tempo para Produto/Clientes (já que não temos o log mensal real deles)
+        let timeRatio = globalTotFat > 0 ? (rawFat / globalTotFat) : 1;
+
+        return {
+            fat: finalFat,
+            lucro: finalLucro,
+            pedidos: Math.round(finalPed),
+            records: activeRecords,
+            timeRatio: timeRatio,
+            ratioCat: ratioCat,
+            ratioCurva: ratioCurva
+        };
+    }
+
     function renderDashboard() {
-      const fAno = document.getElementById('dash-ano').value;
-      const fMes = document.getElementById('dash-mes').value;
-
-      const filtered = MONTHLY_RECORDS.filter(r => {
-        if (fAno !== 'TODOS' && r.ano !== fAno) return false;
-        if (fMes !== 'TODOS' && r.mes !== fMes) return false;
-        return true;
-      });
-
-      const totFat = filtered.reduce((s, r) => s + r.fat, 0);
-      const totLucro = filtered.reduce((s, r) => s + r.lucro, 0);
-      const totPed = filtered.reduce((s, r) => s + r.pedidos, 0);
+      const dataObj = computeDashboardData();
+      
+      const totFat = dataObj.fat;
+      const totLucro = dataObj.lucro;
+      const totPed = dataObj.pedidos;
+      
       const mb = totFat > 0 ? (totLucro / totFat) * 100 : 0;
       const tkt = totPed > 0 ? totFat / totPed : 0;
-      const mediaMes = filtered.length > 0 ? totFat / filtered.length : 0;
+      const mediaMes = dataObj.records.length > 0 ? totFat / dataObj.records.length : 0;
 
+      // KPIs
       document.getElementById('d-kpi-fat').textContent = fmtBRL(totFat);
-      document.getElementById('d-kpi-media').textContent = `Média (${filtered.length} m): ${fmtBRL(mediaMes)}/mês`;
-      document.getElementById('d-kpi-lucro').textContent = fmtBRL(totLucro);
-      document.getElementById('d-kpi-mb').textContent = fmtPct(mb);
-      document.getElementById('d-kpi-ped').textContent = `${totPed} pedidos`;
-      document.getElementById('d-kpi-tkt').textContent = fmtBRL(tkt);
+      
+      // Estado vazio claro se não tiver nada
+      if (dataObj.records.length === 0 || totFat === 0) {
+          document.getElementById('d-kpi-media').textContent = 'Nenhum período/dado correspondente';
+          document.getElementById('d-kpi-lucro').textContent = 'R$ 0,00';
+          document.getElementById('d-kpi-mb').textContent = '0,0%';
+          document.getElementById('d-kpi-ped').textContent = '0 pedidos';
+          document.getElementById('d-kpi-tkt').textContent = 'R$ 0,00';
+      } else {
+          document.getElementById('d-kpi-media').textContent = `Média (${dataObj.records.length} m): ${fmtBRL(mediaMes)}/mês`;
+          document.getElementById('d-kpi-lucro').textContent = fmtBRL(totLucro);
+          document.getElementById('d-kpi-mb').textContent = fmtPct(mb);
+          document.getElementById('d-kpi-ped').textContent = `${totPed} pedidos`;
+          document.getElementById('d-kpi-tkt').textContent = fmtBRL(tkt);
+      }
 
-      const anoTxt = fAno === 'TODOS' ? '2025 + 2026' : fAno;
-      const mesTxt = fMes === 'TODOS' ? 'Todos os Meses' : `Mês ${fMes}`;
-      document.getElementById('dash-filter-label').textContent = `Período selecionado: ${anoTxt} (${mesTxt}) — ${filtered.length} mês(es)`;
+      // Labels
+      const anoTxt = dashFilters.ano === 'TODOS' ? '2025 + 2026' : dashFilters.ano;
+      let mesTxt = 'Todos os Meses';
+      if (!dashFilters.meses.includes('TODOS')) {
+          mesTxt = dashFilters.meses.length + ' mês(es)';
+      }
+      document.getElementById('dash-filter-label').textContent = `Período selecionado: ${anoTxt} (${mesTxt}) — ${dataObj.records.length} mês(es) ativos na base`;
 
+      renderActiveFilterChips();
+
+      // CHART: EVOLUÇÃO
       const ctx = document.getElementById('chartDashMensal').getContext('2d');
       if (dashChart) dashChart.destroy();
       
-      // ABC Chart
-      const abcCtx = document.getElementById('chartABC');
-      if (abcCtx) {
-          if (chartABCInstance) chartABCInstance.destroy();
-          chartABCInstance = new Chart(abcCtx.getContext('2d'), {
-              type: 'bar',
-              data: {
-                  labels: ['Curva A (80%)', 'Curva B (15%)', 'Curva C (5%)'],
-                  datasets: [{
-                      label: 'Faturamento',
-                      data: [totFat * 0.8, totFat * 0.15, totFat * 0.05],
-                      backgroundColor: ['#3E3E3F', '#7C8B43', '#B04A2D'],
-                      borderRadius: 4
-                  }]
-              },
-              options: { responsive: true, maintainAspectRatio: false }
-          });
-      }
-
-      // Cat Chart
-      const catCtx = document.getElementById('chartCat');
-      if (catCtx) {
-          if (chartCatInstance) chartCatInstance.destroy();
-          chartCatInstance = new Chart(catCtx.getContext('2d'), {
-              type: 'doughnut',
-              data: {
-                  labels: ['Queijos', 'Manteigas', 'Queijo Ralado', 'Biscoitos', 'Pão de Alho', 'Ovos Conserva'],
-                  datasets: [{
-                      data: [35, 25, 18, 12, 7, 3], // %
-                      backgroundColor: ['#3E3E3F', '#E6A125', '#7C8B43', '#B04A2D', '#8b5cf6', '#3b82f6'],
-                      borderWidth: 0
-                  }]
-              },
-              options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: {size: 10} } } } }
-          });
-      }
+      // Destacar o mês clicado se houver
+      let bgFat = dataObj.records.map(d => {
+          if (dashFilters.mesClick && d.label !== dashFilters.mesClick) return '#E5E0D8'; // ghost
+          return d.ano === '2025' ? '#3E3E3F' : '#B04A2D';
+      });
+      let bgLucro = dataObj.records.map(d => {
+          if (dashFilters.mesClick && d.label !== dashFilters.mesClick) return '#E5E0D8'; 
+          return '#7C8B43';
+      });
 
       dashChart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: filtered.map(d => d.label),
+          labels: dataObj.records.map(d => d.label),
           datasets: [
             {
               label: 'Faturamento Bruto (R$)',
-              data: filtered.map(d => d.fat),
-              backgroundColor: filtered.map(d => d.ano === '2025' ? '#3E3E3F' : '#B04A2D'),
+              data: dataObj.records.map(d => d.fat * dataObj.ratioCat * dataObj.ratioCurva),
+              backgroundColor: bgFat,
               borderRadius: 5
             },
             {
               label: 'Lucro Bruto (R$)',
-              data: filtered.map(d => d.lucro),
-              backgroundColor: '#7C8B43',
+              data: dataObj.records.map(d => d.lucro * dataObj.ratioCat * dataObj.ratioCurva),
+              backgroundColor: bgLucro,
               borderRadius: 5
             }
           ]
@@ -1394,21 +1581,273 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          onClick: (e, elements) => {
+              if (elements.length > 0) {
+                  const idx = elements[0].index;
+                  const labelClicked = dashChart.data.labels[idx];
+                  if (dashFilters.mesClick === labelClicked) dashFilters.mesClick = null; // toggle
+                  else dashFilters.mesClick = labelClicked;
+                  renderDashboard();
+              }
+          },
           scales: {
-            y: {
-              beginAtZero: true,
-              ticks: { callback: v => 'R$ ' + (v / 1000).toFixed(0) + 'k' }
-            }
+            y: { beginAtZero: true, ticks: { callback: v => 'R$ ' + (v / 1000).toFixed(0) + 'k' } }
           }
         }
       });
+
+      // CHART: ABC
+      const abcCtx = document.getElementById('chartABC');
+      if (abcCtx) {
+          if (chartABCInstance) chartABCInstance.destroy();
+          let rawTotForAbc = dataObj.records.reduce((s, r) => s + r.fat, 0) * dataObj.ratioCat; // Aplica cat, mas desfaz curva no total base do graf
+          
+          let abcData = [rawTotForAbc * 0.8, rawTotForAbc * 0.15, rawTotForAbc * 0.05];
+          let bgAbc = ['#3E3E3F', '#7C8B43', '#B04A2D'];
+          
+          if (dashFilters.curva) {
+              if(dashFilters.curva === 'Curva A') bgAbc = ['#3E3E3F', '#E5E0D8', '#E5E0D8'];
+              else if(dashFilters.curva === 'Curva B') bgAbc = ['#E5E0D8', '#7C8B43', '#E5E0D8'];
+              else if(dashFilters.curva === 'Curva C') bgAbc = ['#E5E0D8', '#E5E0D8', '#B04A2D'];
+          }
+
+          chartABCInstance = new Chart(abcCtx.getContext('2d'), {
+              type: 'bar',
+              data: {
+                  labels: ['Curva A', 'Curva B', 'Curva C'],
+                  datasets: [{
+                      label: 'Faturamento',
+                      data: abcData,
+                      backgroundColor: bgAbc,
+                      borderRadius: 4
+                  }]
+              },
+              options: { 
+                  responsive: true, 
+                  maintainAspectRatio: false,
+                  onClick: (e, elements) => {
+                      if (elements.length > 0) {
+                          const labels = ['Curva A', 'Curva B', 'Curva C'];
+                          const clicked = labels[elements[0].index];
+                          if (dashFilters.curva === clicked) dashFilters.curva = null; // toggle
+                          else dashFilters.curva = clicked;
+                          renderDashboard();
+                      }
+                  },
+                  plugins: {
+                      tooltip: {
+                          callbacks: {
+                              label: function(ctx) {
+                                  const val = ctx.raw;
+                                  let pct = '0.0%';
+                                  if (ctx.label.includes('A')) pct = '80,0%';
+                                  if (ctx.label.includes('B')) pct = '15,0%';
+                                  if (ctx.label.includes('C')) pct = '5,0%';
+                                  return `${pct} | ${fmtBRL(val)}`;
+                              }
+                          }
+                      }
+                  }
+              }
+          });
+      }
+
+      // CHART: CATEGORIA
+      const catCtx = document.getElementById('chartCat');
+      if (catCtx) {
+          if (chartCatInstance) chartCatInstance.destroy();
+          const catLabels = ['Queijos', 'Manteigas', 'TEIXEIRA - Queijo Ralado', 'DELICIA NORDESTINA - Biscoitos', 'Pão de Alho Reserva One', 'CODORNA - Ovos Conserva'];
+          const catDisplayLabels = ['Queijos', 'Manteigas', 'Queijo Ralado', 'Biscoitos', 'Pão de Alho', 'Ovos Conserva'];
+          const catPcts = [0.35, 0.25, 0.18, 0.12, 0.07, 0.03];
+          let rawTotForCat = dataObj.records.reduce((s, r) => s + r.fat, 0) * dataObj.ratioCurva;
+
+          let catData = catPcts.map(p => rawTotForCat * p);
+          let bgCat = ['#3E3E3F', '#E6A125', '#7C8B43', '#B04A2D', '#8b5cf6', '#3b82f6'];
+          
+          if (dashFilters.categoria) {
+              bgCat = catLabels.map((c, i) => {
+                  if (c === dashFilters.categoria || dashFilters.categoria.includes(c)) return bgCat[i];
+                  return '#E5E0D8'; // deselecionado ghost
+              });
+          }
+
+          chartCatInstance = new Chart(catCtx.getContext('2d'), {
+              type: 'doughnut',
+              data: {
+                  labels: catDisplayLabels,
+                  datasets: [{ data: catData, backgroundColor: bgCat, borderWidth: 2, borderColor: '#fff' }]
+              },
+              options: { 
+                  responsive: true, 
+                  maintainAspectRatio: false,
+                  onClick: (e, elements) => {
+                      if (elements.length > 0) {
+                          const clicked = catLabels[elements[0].index];
+                          if (dashFilters.categoria === clicked) dashFilters.categoria = null; // toggle
+                          else dashFilters.categoria = clicked;
+                          renderDashboard();
+                      }
+                  },
+                  plugins: { 
+                      legend: { position: 'right', labels: { boxWidth: 12, font: {size: 10} } },
+                      tooltip: {
+                          callbacks: {
+                              label: function(ctx) {
+                                  const val = ctx.raw;
+                                  const pct = (catPcts[ctx.dataIndex] * 100).toFixed(1).replace('.', ',') + '%';
+                                  return `${pct} | ${fmtBRL(val)}`;
+                              }
+                          }
+                      }
+                  } 
+              }
+          });
+      }
+
+      // RENDERIZAR TABELA ABC DE CLIENTES
+      renderAbcClientTable(dataObj);
+
+      // Atualiza Carrossel sempre que o dash muda
+      resetCarousel();
+      renderProductProfitabilityTables();
+    }
+
+    function renderAbcClientTable(dataObj) {
+        // Build base client list from ROTA_DATA + NEG_CLIENTS + HIGH_CLIENTS + LOW_CLIENTS
+        // We simulate exact proportional billing based on the period's temporal ratio and the active category/curva ratios.
+        
+        let clientMap = new Map();
+        
+        const addClients = (arr) => {
+            arr.forEach(c => {
+                let nome = c.cliente.trim();
+                let histFat = parseFloat(c.fat) || 0;
+                let curva = c.curva || 'Curva C'; // default
+                
+                // if it's from NEG/LOW/HIGH, determine curva roughly by fat if missing
+                if(!c.curva) {
+                    if (histFat > 10000) curva = 'Curva A';
+                    else if (histFat > 3000) curva = 'Curva B';
+                    else curva = 'Curva C';
+                }
+
+                if (!clientMap.has(nome)) {
+                    clientMap.set(nome, { cliente: nome, histFat: histFat, curva: curva });
+                } else {
+                    clientMap.get(nome).histFat += histFat;
+                }
+            });
+        };
+
+        addClients(ROTA_DATA);
+        addClients(NEG_CLIENTS);
+        addClients(LOW_CLIENTS);
+        addClients(HIGH_CLIENTS);
+
+        let finalClients = Array.from(clientMap.values());
+        
+        // Aplicar filtros de Busca e Curva do Dash
+        if (dashFilters.curva) {
+            finalClients = finalClients.filter(c => c.curva === dashFilters.curva);
+        }
+        if (dashFilters.search) {
+            finalClients = finalClients.filter(c => c.cliente.toLowerCase().includes(dashFilters.search) || c.curva.toLowerCase().includes(dashFilters.search));
+        }
+
+        // Calcula o faturamento ajustado para o periodo e categoria
+        // Multiplicador global final aplicado a cada cliente:
+        let simRatio = dataObj.timeRatio * dataObj.ratioCat; 
+        
+        finalClients.forEach(c => {
+            c.simFat = c.histFat * simRatio;
+        });
+        
+        // Ordena por simFat DESC
+        finalClients.sort((a, b) => b.simFat - a.simFat);
+        
+        let tableTot = finalClients.reduce((s, c) => s + c.simFat, 0);
+        let runSum = 0;
+        
+        const tbody = document.getElementById('tbody-abc-clientes');
+        document.getElementById('abc-cli-count').textContent = `${finalClients.length} clientes`;
+        
+        if (finalClients.length === 0 || tableTot === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-stone-400 font-bold">Nenhum cliente no filtro atual.</td></tr>`;
+            return;
+        }
+
+        let html = '';
+        // Limita a 50 na UI para não travar DOM, afinal tem scroll
+        const showLimit = Math.min(50, finalClients.length);
+        for(let i=0; i < showLimit; i++){
+            let c = finalClients[i];
+            runSum += c.simFat;
+            let pRel = (c.simFat / tableTot) * 100;
+            let pAcc = (runSum / tableTot) * 100;
+            
+            let bgBadge = 'bg-stone-200 text-stone-700';
+            if(c.curva === 'Curva A') bgBadge = 'bg-cg_dark text-cg_gold';
+            if(c.curva === 'Curva B') bgBadge = 'bg-emerald-100 text-emerald-900';
+            if(c.curva === 'Curva C') bgBadge = 'bg-amber-100 text-amber-900';
+
+            html += `
+              <tr class="hover:bg-stone-50 transition-colors">
+                <td class="p-2 font-bold text-cg_dark max-w-[140px] truncate" title="${c.cliente}">${c.cliente}</td>
+                <td class="p-2 text-center"><span class="px-1.5 py-0.5 rounded ${bgBadge} text-[9px] font-black uppercase">${c.curva.replace('Curva ','')}</span></td>
+                <td class="p-2 text-right font-black text-stone-600">${fmtBRL(c.simFat)}</td>
+                <td class="p-2 text-right text-stone-500 font-semibold">${pRel.toFixed(1).replace('.',',')}% <span class="text-[9px] text-stone-300 ml-1">(${pAcc.toFixed(1).replace('.',',')}%)</span></td>
+              </tr>
+            `;
+        }
+        
+        if(finalClients.length > showLimit) {
+            html += `<tr><td colspan="4" class="p-2 text-center text-stone-400 text-[10px] font-bold">+ ${finalClients.length - showLimit} clientes ocultos...</td></tr>`;
+        }
+
+        tbody.innerHTML = html;
     }
 
     function getSortedProducts() {
       const mode = document.getElementById('carousel-sort').value;
-      const arr = [...ALL_PRODUCTS_STATS];
-      if (mode === 'MAIS_VENDIDOS') arr.sort((a, b) => b.fat - a.fat);
-      else if (mode === 'MENOS_VENDIDOS') arr.sort((a, b) => a.fat - b.fat);
+      const dataObj = computeDashboardData(); // Reutiliza para ter os ratios
+      
+      let arr = ALL_PRODUCTS_STATS.map(p => {
+          // Clone and scale data proportionally
+          let simRatio = dataObj.timeRatio * dataObj.ratioCurva;
+          
+          return {
+              ...p,
+              simFat: p.fat * simRatio,
+              simLucro: p.lucro * simRatio,
+              simQtd: p.qtd * simRatio
+          };
+      });
+
+      // Filter by category if set
+      if (dashFilters.categoria) {
+          // We have to match product `nome` or real category to the chart label.
+          // ALL_PRODUCTS_STATS doesn't have `cat`. We map roughly by name:
+          let fCat = dashFilters.categoria.toLowerCase();
+          arr = arr.filter(p => {
+              let nm = p.nome.toLowerCase();
+              if (fCat.includes('queijo') && !fCat.includes('ralado') && nm.includes('q.') && !nm.includes('ralado') && !nm.includes('q. r.')) return true;
+              if (fCat.includes('manteiga') && (nm.includes('manteiga') || nm.includes('mantemix') || nm.includes('mix cremosa'))) return true;
+              if (fCat.includes('ralado') && (nm.includes('ralado') || nm.includes('q. r.') || nm.includes('q.r.'))) return true;
+              if (fCat.includes('biscoito') && nm.includes('bolacha')) return true;
+              if (fCat.includes('alho') && nm.includes('alho')) return true;
+              if (fCat.includes('ovos') && nm.includes('codorna')) return true;
+              return false;
+          });
+      }
+
+      // Filter by search
+      if (dashFilters.search) {
+          let sq = dashFilters.search.toLowerCase();
+          arr = arr.filter(p => p.nome.toLowerCase().includes(sq));
+      }
+
+      if (mode === 'MAIS_VENDIDOS') arr.sort((a, b) => b.simFat - a.simFat);
+      else if (mode === 'MENOS_VENDIDOS') arr.sort((a, b) => a.simFat - b.simFat);
       else if (mode === 'MAIS_RENTAVEIS') arr.sort((a, b) => b.mb - a.mb);
       else if (mode === 'MENOS_RENTAVEIS') arr.sort((a, b) => a.mb - b.mb);
       return arr;
@@ -1421,6 +1860,7 @@
 
     function moveCarousel(dir) {
       const arr = getSortedProducts();
+      if(arr.length === 0) return;
       const maxPage = Math.ceil(arr.length / 3) - 1;
       carouselPage += dir;
       if (carouselPage < 0) carouselPage = maxPage;
@@ -1430,9 +1870,16 @@
 
     function renderCarousel() {
       const arr = getSortedProducts();
+      const container = document.getElementById('carousel-cards');
+      
+      if (arr.length === 0) {
+          container.innerHTML = `<div class="col-span-1 md:col-span-3 p-4 text-center font-bold text-stone-400 border border-stone-200 rounded-xl">Nenhum produto atende aos filtros de Categoria/Busca atuais.</div>`;
+          document.getElementById('carousel-counter').textContent = '0 SKUs';
+          return;
+      }
+
       const start = carouselPage * 3;
       const slice = arr.slice(start, start + 3);
-      const container = document.getElementById('carousel-cards');
 
       container.innerHTML = slice.map((p, i) => {
         const pos = start + i + 1;
@@ -1442,24 +1889,23 @@
           <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between gap-1">
-                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-cg_dark text-cg_gold">#${pos} na Lista (${p.rank_venda}º em Vendas)</span>
+                <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-cg_dark text-cg_gold" title="Posição nesta visualização filtrada">#${pos} Filtrado</span>
                 <span class="text-[11px] font-black ${mbColor}">Margem: ${fmtPct(p.mb)}</span>
               </div>
               <h4 class="text-xs font-black text-cg_dark mt-2 leading-snug">${p.nome}</h4>
             </div>
             <div class="mt-3 pt-2 border-t border-stone-200 text-[11px] space-y-0.5">
-              <div class="flex justify-between"><span>Faturamento:</span><strong class="text-cg_dark">${fmtBRL(p.fat)}</strong></div>
-              <div class="flex justify-between"><span>Lucro Bruto:</span><strong class="${mbColor}">${fmtBRL(p.lucro)}</strong></div>
-              <div class="flex justify-between text-stone-400"><span>Volume:</span><span>${p.qtd.toLocaleString('pt-BR')} un (${p.pedidos} ped)</span></div>
+              <div class="flex justify-between"><span>Faturamento:</span><strong class="text-cg_dark">${fmtBRL(p.simFat)}</strong></div>
+              <div class="flex justify-between"><span>Lucro Bruto:</span><strong class="${mbColor}">${fmtBRL(p.simLucro)}</strong></div>
+              <div class="flex justify-between text-stone-400"><span>Volume (Sim.):</span><span>${p.simQtd.toLocaleString('pt-BR')} un</span></div>
             </div>
           </div>
         `;
       }).join('');
 
-      document.getElementById('carousel-counter').textContent = `Exibindo produtos ${start + 1} a ${Math.min(start + 3, arr.length)} de ${arr.length} SKUs comercializados`;
+      document.getElementById('carousel-counter').textContent = `Exibindo produtos ${start + 1} a ${Math.min(start + 3, arr.length)} de ${arr.length} SKUs filtrados`;
     }
-
-    function renderProductProfitabilityTables() {
+function renderProductProfitabilityTables() {
       const mostProfit = [...ALL_PRODUCTS_STATS].filter(p => p.fat >= 500).sort((a, b) => b.mb - a.mb).slice(0, 10);
       const leastProfit = [...ALL_PRODUCTS_STATS].sort((a, b) => a.mb - b.mb).slice(0, 10);
 
@@ -2251,7 +2697,6 @@
     window.onload = () => {
       checkAppEnvironment();
       renderDashboard();
-      renderCarousel();
       renderProductProfitabilityTables();
       initRota();
       initSimulador();
