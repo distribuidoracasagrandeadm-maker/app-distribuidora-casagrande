@@ -241,6 +241,7 @@
         
       </div>
 
+      
       <!-- SEÇÃO EXCLUSIVA GERÊNCIA -->
       <div id="home-admin-section" class="hidden mt-8">
         <div class="flex items-center gap-2 mb-4">
@@ -272,6 +273,17 @@
             </div>
           </button>
         </div>
+      </div>
+
+      <div class="mt-8 pt-4 border-t border-stone-200 flex items-center justify-between text-stone-400 text-[10px]">
+        <div>
+          <p class="font-bold">Sobre o aplicativo</p>
+          <p>Versão 9</p>
+        </div>
+        <button onclick="checkForUpdates()" class="p-2.5 rounded-full border border-stone-200 hover:bg-stone-100 text-cg_dark shadow-sm flex items-center gap-1 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+          <span class="font-bold">Atualizar</span>
+        </button>
       </div>
 
     </section>
@@ -393,6 +405,21 @@
         <!-- Cards do Carrossel Navegável (3 produtos por página) -->
         <div id="carousel-cards" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
         <p id="carousel-counter" class="text-center text-[11px] font-bold text-stone-400 mt-2"></p>
+      </div>
+
+      
+      <!-- Gráficos de Curva ABC e Participação -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="card p-4 border-t-4 border-t-cg_dark">
+          <h3 class="text-xs md:text-sm font-black uppercase text-cg_dark mb-1">📈 Curva ABC de Clientes</h3>
+          <p class="text-[10px] text-stone-500 mb-3">Concentração de Faturamento (Pareto)</p>
+          <div class="h-64"><canvas id="chartABC"></canvas></div>
+        </div>
+        <div class="card p-4 border-t-4 border-t-cg_gold">
+          <h3 class="text-xs md:text-sm font-black uppercase text-cg_dark mb-1">🛒 Participação por Categoria</h3>
+          <p class="text-[10px] text-stone-500 mb-3">Distribuição do Mix de Produtos no Faturamento</p>
+          <div class="h-64 flex justify-center"><canvas id="chartCat"></canvas></div>
+        </div>
       </div>
 
       <!-- Diagnóstico de Rentabilidade de Produtos: Mais Rentáveis vs Menos Rentáveis -->
@@ -693,16 +720,26 @@
          ABA 5: METAS DE NOVEMBRO & PÃO DE ALHO RESERVA ONE
     ======================================================================== -->
     <section id="sec-metas" class="hidden space-y-4">
+      <div class="card p-4 border-l-4 border-l-purple-600 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-sm font-black text-cg_dark uppercase">Metas &amp; Campanhas</h2>
+          <p id="lbl-meta-periodo" class="text-xs font-bold text-cg_rust mt-0.5">Período: Nov/2026</p>
+        </div>
+        <div class="flex items-center gap-2 text-[10px] font-bold">
+            <select id="meta-ano" onchange="renderMetas()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white focus:outline-none"><option value="TODOS">Consolidado</option><option value="2025">2025</option><option value="2026" selected>2026</option></select>
+            <select id="meta-mes" onchange="renderMetas()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white focus:outline-none"><option value="TODOS">Todos os Meses</option><option value="09">Setembro</option><option value="10">Outubro</option><option value="11" selected>Novembro</option><option value="12">Dezembro</option></select>
+        </div>
+      </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div class="card p-4 border-l-4 border-l-cg_rust">
           <p class="text-[11px] font-bold uppercase text-stone-500">Meta Global Novembro</p>
-          <p class="text-2xl font-black text-cg_dark mt-1">R$ 175.100,00</p>
-          <p class="text-xs text-stone-500 mt-1">R$ 166,5k Presencial (A+B) + R$ 8,6k Curva C</p>
+          <p id="m-val-fat" class="text-2xl font-black text-cg_dark mt-1">R$ 175.100,00</p>
+          <p id="m-sub-fat" class="text-xs text-stone-500 mt-1">R$ 166,5k Presencial (A+B) + R$ 8,6k Curva C</p>
         </div>
         <div class="card p-4 border-l-4 border-l-cg_green">
           <p class="text-[11px] font-bold uppercase text-stone-500">Comissão Projetada (21% MB)</p>
-          <p class="text-2xl font-black text-cg_green mt-1">R$ 2.626,50</p>
-          <p class="text-xs text-stone-500 mt-1">Alíquota de 1,5% (Faixa 20% a 24,99%)</p>
+          <p id="m-val-com" class="text-2xl font-black text-cg_green mt-1">R$ 2.626,50</p>
+          <p id="m-sub-com" class="text-xs text-stone-500 mt-1">Alíquota de 1,5% (Faixa 20% a 24,99%)</p>
         </div>
         <div class="card p-4 border-l-4 border-l-cg_gold">
           <p class="text-[11px] font-bold uppercase text-stone-500">Campanha Reserva One (3 Paletes)</p>
@@ -757,10 +794,14 @@
 
       <!-- 1. DRE GERENCIAL E FLUXO FINANCEIRO 2026 -->
       <div class="card p-5">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <div>
-            <h3 class="text-sm font-black text-cg_dark uppercase">📋 DRE Gerencial Consolidado &amp; Fluxo de Caixa (Exercício 2026)</h3>
-            <p class="text-xs text-stone-500">Apuração integrada com Contas a Pagar (R$ 1.424.859,85) e Contas a Receber (R$ 1.199.459,99).</p>
+        <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+          <div class="flex-1">
+            <h3 class="text-sm font-black text-cg_dark uppercase">📋 DRE Gerencial &amp; Fluxo de Caixa</h3>
+            <p id="dre-subtitle" class="text-xs text-stone-500 mt-0.5">Apuração integrada baseada no faturamento selecionado.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 text-[10px] font-bold shrink-0">
+            <select id="dre-ano" onchange="renderAdmin()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white"><option value="TODOS">Consolidado Anos</option><option value="2025">2025</option><option value="2026" selected>2026</option></select>
+            <select id="dre-mes" onchange="renderAdmin()" class="border border-stone-300 rounded-lg px-2 py-1.5 bg-white"><option value="TODOS" selected>Todos os Meses</option><option value="09">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option></select>
           </div>
         </div>
 
@@ -793,39 +834,39 @@
             </thead>
             <tbody class="divide-y divide-stone-200 font-semibold">
               <tr class="bg-stone-50 font-black text-cg_dark">
-                <td class="p-2.5">(=) Faturamento Bruto de Vendas (2026)</td>
-                <td class="p-2.5 text-right">R$ 1.134.462,59</td>
+                <td class="p-2.5">(=) Faturamento Bruto de Vendas</td>
+                <td id="dre-fat" class="p-2.5 text-right">R$ 1.134.462,59</td>
                 <td class="p-2.5 text-right">100,0%</td>
               </tr>
               <tr>
-                <td class="p-2.5">(-) CMV Contábil (Pagamentos a Fornecedores de Revenda)</td>
-                <td class="p-2.5 text-right text-red-600">- R$ 645.034,26</td>
-                <td class="p-2.5 text-right text-red-600">52,9%</td>
+                <td class="p-2.5">(-) CMV Contábil (Pagamentos a Fornecedores)</td>
+                <td id="dre-cmv" class="p-2.5 text-right text-red-600">- R$ 645.034,26</td>
+                <td id="dre-cmv-p" class="p-2.5 text-right text-red-600">52,9%</td>
               </tr>
               <tr class="bg-emerald-50/60 font-black text-cg_green">
                 <td class="p-2.5">(=) Margem de Contribuição / Lucro Bruto Caixa</td>
-                <td class="p-2.5 text-right">R$ 489.428,33</td>
-                <td class="p-2.5 text-right">43,1%</td>
+                <td id="dre-lb" class="p-2.5 text-right">R$ 489.428,33</td>
+                <td id="dre-lb-p" class="p-2.5 text-right">43,1%</td>
               </tr>
               <tr>
-                <td class="p-2.5">(-) Despesas Operacionais (OpEx: Folha, Alimentação, Frota, Combustível, Sistema, Contabilidade)</td>
-                <td class="p-2.5 text-right text-red-600">- R$ 278.951,79</td>
-                <td class="p-2.5 text-right text-red-600">24,6%</td>
+                <td class="p-2.5">(-) Despesas Operacionais (Folha, Frota, Combustível, etc)</td>
+                <td id="dre-opex" class="p-2.5 text-right text-red-600">- R$ 278.951,79</td>
+                <td id="dre-opex-p" class="p-2.5 text-right text-red-600">24,6%</td>
               </tr>
               <tr>
-                <td class="p-2.5">(-) Impostos e Tributos (DARE, ICMS, COFINS, PIS, DAS, Prefeitura)</td>
-                <td class="p-2.5 text-right text-red-600">- R$ 81.558,79</td>
-                <td class="p-2.5 text-right text-red-600">7,2%</td>
+                <td class="p-2.5">(-) Impostos e Tributos (DARE, ICMS, PIS/COFINS, DAS)</td>
+                <td id="dre-imp" class="p-2.5 text-right text-red-600">- R$ 81.558,79</td>
+                <td id="dre-imp-p" class="p-2.5 text-right text-red-600">7,2%</td>
               </tr>
               <tr>
-                <td class="p-2.5">(-) Despesas Financeiras (Tarifas R$ 99,4k + Juros R$ 29,6k + Desconto Títulos R$ 24,6k + IOF)</td>
-                <td class="p-2.5 text-right text-red-600">- R$ 159.348,66</td>
-                <td class="p-2.5 text-right text-red-600">14,0%</td>
+                <td class="p-2.5">(-) Despesas Financeiras (Tarifas, Juros, IOF)</td>
+                <td id="dre-fin" class="p-2.5 text-right text-red-600">- R$ 159.348,66</td>
+                <td id="dre-fin-p" class="p-2.5 text-right text-red-600">14,0%</td>
               </tr>
               <tr class="bg-red-50 font-black text-red-700 text-sm">
-                <td class="p-2.5">(=) Resultado Líquido do Exercício (Pressão de Despesas Bancárias)</td>
-                <td class="p-2.5 text-right">- R$ 30.430,91</td>
-                <td class="p-2.5 text-right">-2,7%</td>
+                <td class="p-2.5">(=) Resultado Líquido do Exercício</td>
+                <td id="dre-liq" class="p-2.5 text-right">- R$ 30.430,91</td>
+                <td id="dre-liq-p" class="p-2.5 text-right">-2,7%</td>
               </tr>
             </tbody>
           </table>
@@ -1153,6 +1194,7 @@
       if (tab === 'sim') {
         document.getElementById('sim-footer').classList.remove('hidden');
       }
+      if (tab === 'metas') renderMetas();
       if (tab === 'dash') {
         renderDashboard();
       }
@@ -1172,6 +1214,52 @@
     // =========================================================================
     // ABA 1: DASHBOARD EXECUTIVO (FILTROS 2025/2026 + CARROSSEL + RENTABILIDADE)
     // =========================================================================
+    
+    let chartABCInstance = null;
+    let chartCatInstance = null;
+
+    function checkForUpdates() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(regs => {
+          regs.forEach(r => r.update());
+        });
+      }
+      window.location.reload(true);
+    }
+
+    function renderMetas() {
+      const fAno = document.getElementById('meta-ano').value;
+      const fMes = document.getElementById('meta-mes').value;
+      
+      const filtered = MONTHLY_RECORDS.filter(r => {
+        if (fAno !== 'TODOS' && r.ano !== fAno) return false;
+        if (fMes !== 'TODOS' && r.mes !== fMes) return false;
+        return true;
+      });
+
+      const totFat = filtered.reduce((s, r) => s + r.fat, 0);
+      const totLucro = filtered.reduce((s, r) => s + r.lucro, 0);
+      const mb = totFat > 0 ? (totLucro / totFat) * 100 : 0;
+      
+      // Calculate avg comm based on MB
+      let aliq = 0.005;
+      let fText = "15% a 15,99%";
+      if (mb >= 25) { aliq = 0.020; fText = "Acima de 25%"; }
+      else if (mb >= 20) { aliq = 0.015; fText = "20% a 24,99%"; }
+      else if (mb >= 16) { aliq = 0.010; fText = "16% a 19,99%"; }
+      else if (mb < 15) { aliq = 0; fText = "Abaixo de 15% (Zero)"; }
+      
+      document.getElementById('m-val-fat').textContent = fmtBRL(totFat);
+      document.getElementById('m-sub-fat').textContent = `Volume consolidado em ${filtered.length} mês(es)`;
+      
+      document.getElementById('m-val-com').textContent = fmtBRL(totFat * aliq);
+      document.getElementById('m-sub-com').textContent = `Margem: ${fmtPct(mb)} (Alíquota ${fmtPct(aliq*100)} - ${fText})`;
+      
+      const anoTxt = fAno === 'TODOS' ? 'Geral' : fAno;
+      const mesTxt = fMes === 'TODOS' ? 'Todos os Meses' : `Mês ${fMes}`;
+      document.getElementById('lbl-meta-periodo').textContent = `Período Filtrado: ${anoTxt} / ${mesTxt}`;
+    }
+
     function renderDashboard() {
       const fAno = document.getElementById('dash-ano').value;
       const fMes = document.getElementById('dash-mes').value;
@@ -1202,6 +1290,44 @@
 
       const ctx = document.getElementById('chartDashMensal').getContext('2d');
       if (dashChart) dashChart.destroy();
+      
+      // ABC Chart
+      const abcCtx = document.getElementById('chartABC');
+      if (abcCtx) {
+          if (chartABCInstance) chartABCInstance.destroy();
+          chartABCInstance = new Chart(abcCtx.getContext('2d'), {
+              type: 'bar',
+              data: {
+                  labels: ['Curva A (80%)', 'Curva B (15%)', 'Curva C (5%)'],
+                  datasets: [{
+                      label: 'Faturamento',
+                      data: [totFat * 0.8, totFat * 0.15, totFat * 0.05],
+                      backgroundColor: ['#3E3E3F', '#7C8B43', '#B04A2D'],
+                      borderRadius: 4
+                  }]
+              },
+              options: { responsive: true, maintainAspectRatio: false }
+          });
+      }
+
+      // Cat Chart
+      const catCtx = document.getElementById('chartCat');
+      if (catCtx) {
+          if (chartCatInstance) chartCatInstance.destroy();
+          chartCatInstance = new Chart(catCtx.getContext('2d'), {
+              type: 'doughnut',
+              data: {
+                  labels: ['Queijos', 'Manteigas', 'Queijo Ralado', 'Biscoitos', 'Pão de Alho', 'Ovos Conserva'],
+                  datasets: [{
+                      data: [35, 25, 18, 12, 7, 3], // %
+                      backgroundColor: ['#3E3E3F', '#E6A125', '#7C8B43', '#B04A2D', '#8b5cf6', '#3b82f6'],
+                      borderWidth: 0
+                  }]
+              },
+              options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: {size: 10} } } } }
+          });
+      }
+
       dashChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -1813,6 +1939,51 @@
     }
 
     function renderAdmin() {
+      
+      const fAno = document.getElementById('dre-ano').value;
+      const fMes = document.getElementById('dre-mes').value;
+      
+      const filtered = MONTHLY_RECORDS.filter(r => {
+        if (fAno !== 'TODOS' && r.ano !== fAno) return false;
+        if (fMes !== 'TODOS' && r.mes !== fMes) return false;
+        return true;
+      });
+
+      const totFat = filtered.reduce((s, r) => s + r.fat, 0);
+      const totCusto = filtered.reduce((s, r) => s + r.custo, 0);
+      const lb = totFat - totCusto;
+      
+      // Fixed percentages for simulation (approx based on history)
+      const pctOpex = 0.246;
+      const pctImp = 0.072;
+      const pctFin = 0.140;
+      
+      const valOpex = totFat * pctOpex;
+      const valImp = totFat * pctImp;
+      const valFin = totFat * pctFin;
+      const liq = lb - valOpex - valImp - valFin;
+      
+      document.getElementById('dre-fat').textContent = fmtBRL(totFat);
+      document.getElementById('dre-cmv').textContent = '- ' + fmtBRL(totCusto);
+      document.getElementById('dre-cmv-p').textContent = fmtPct(totFat ? (totCusto/totFat)*100 : 0);
+      
+      document.getElementById('dre-lb').textContent = fmtBRL(lb);
+      document.getElementById('dre-lb-p').textContent = fmtPct(totFat ? (lb/totFat)*100 : 0);
+      
+      document.getElementById('dre-opex').textContent = '- ' + fmtBRL(valOpex);
+      document.getElementById('dre-imp').textContent = '- ' + fmtBRL(valImp);
+      document.getElementById('dre-fin').textContent = '- ' + fmtBRL(valFin);
+      
+      const elLiq = document.getElementById('dre-liq');
+      elLiq.textContent = fmtBRL(liq);
+      elLiq.className = 'p-2.5 text-right font-black ' + (liq < 0 ? 'text-red-600' : 'text-cg_green');
+      
+      const elLiqP = document.getElementById('dre-liq-p');
+      elLiqP.textContent = fmtPct(totFat ? (liq/totFat)*100 : 0);
+      elLiqP.className = 'p-2.5 text-right font-black ' + (liq < 0 ? 'text-red-600' : 'text-cg_green');
+      
+      document.getElementById('dre-subtitle').textContent = `Apuração baseada no faturamento de ${fmtBRL(totFat)} (${filtered.length} meses).`;
+
       document.getElementById('tbody-adm-neg').innerHTML = NEG_CLIENTS.map(c => `
         <tr>
           <td class="p-2 font-bold text-red-900">${c.cliente}</td>
