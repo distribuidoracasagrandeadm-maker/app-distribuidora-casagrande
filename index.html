@@ -293,7 +293,7 @@
       <div class="mt-8 pt-4 border-t border-stone-200 flex items-center justify-between text-stone-400 text-[10px]">
         <div>
           <p class="font-bold">Sobre o aplicativo</p>
-          <p>Versão 28</p>
+          <p>Versão 29</p>
         </div>
         <button onclick="checkForUpdates()" class="p-2.5 rounded-full border border-stone-200 hover:bg-stone-100 text-cg_dark shadow-sm flex items-center gap-1 transition">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
@@ -493,27 +493,52 @@
           </div>
         </div>
 
-        <div class="card p-4 border-t-4 border-t-red-600">
-          <div class="flex items-center justify-between mb-2">
-            <div>
-              <h3 class="text-xs md:text-sm font-black uppercase text-red-700">⚠️ Top 10 Produtos Menor Lucro Bruto (R$) &amp; Sem Custo</h3>
-              <p class="text-[10px] text-stone-500">Ordenado pelo menor Lucro Bruto em R$ + alerta SKU sem custo. Clique para auditar clientes.</p>
+        <div class="card p-4 border-t-4 border-t-red-600 flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+              <div>
+                <h3 class="text-xs md:text-sm font-black uppercase text-red-700">⚠️ Top 10 Produtos com Menor Margem (%)</h3>
+                <p class="text-[10px] text-stone-500">Ordenado por margem percentual crescente (do pior para o melhor). Clique na linha para auditar clientes.</p>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <label for="low-margin-threshold" class="text-[10px] font-bold text-stone-500 uppercase">Filtro:</label>
+                <select id="low-margin-threshold" onchange="renderProductProfitabilityTables()" class="border border-stone-300 rounded-lg px-2 py-1 text-[10px] font-bold bg-white text-cg_dark focus:outline-none focus:border-cg_rust">
+                  <option value="15" selected>Abaixo de 15% (Padrão)</option>
+                  <option value="ALL">Todos (Top 10 menores)</option>
+                  <option value="0">Margem Negativa (&lt; 0%)</option>
+                  <option value="20">Abaixo de 20%</option>
+                  <option value="25">Abaixo de 25%</option>
+                </select>
+              </div>
             </div>
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-red-100 text-red-800">Atenção Comercial</span>
+
+            <!-- Resumo de Impacto (1.7) -->
+            <div id="low-margin-summary" class="mb-2.5 px-2.5 py-2 rounded-xl bg-red-50/70 border border-red-200 text-[11px] text-red-900 flex flex-wrap items-center justify-between gap-1.5"></div>
+
+            <!-- Seção Separada: Produtos Sem Custo Cadastrado (1.6) -->
+            <div id="box-skus-sem-custo" class="hidden mb-2.5 p-2.5 rounded-xl bg-stone-100 border border-amber-300"></div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-[11px]">
+                <thead>
+                  <tr class="border-b border-stone-200 text-stone-400 uppercase font-bold text-[10px]">
+                    <th class="py-1.5 pl-1.5">Produto</th>
+                    <th class="py-1.5 text-right">Faturamento</th>
+                    <th class="py-1.5 text-right">Custo Total</th>
+                    <th class="py-1.5 text-right">Lucro Bruto</th>
+                    <th class="py-1.5 pr-1.5 text-right">Margem (%)</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-prod-least-profit" class="divide-y divide-stone-100"></tbody>
+              </table>
+            </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-[11px]">
-              <thead>
-                <tr class="border-b border-stone-200 text-stone-400 uppercase font-bold text-[10px]">
-                  <th class="py-1.5">Produto</th>
-                  <th class="py-1.5 text-right">Faturamento</th>
-                  <th class="py-1.5 text-right">Custo Total</th>
-                  <th class="py-1.5 text-right">Lucro Bruto</th>
-                  <th class="py-1.5 text-right">Margem</th>
-                </tr>
-              </thead>
-              <tbody id="tbody-prod-least-profit" class="divide-y divide-stone-100"></tbody>
-            </table>
+
+          <div class="mt-2.5 pt-2 border-t border-stone-100 flex flex-wrap items-center gap-2 text-[9px] font-bold text-stone-500">
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-red-600 inline-block"></span> &lt; 0% Negativa</span>
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-red-200 border border-red-400 inline-block"></span> 0%–15% Crítica</span>
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-200 border border-amber-400 inline-block"></span> 15%–25% Atenção</span>
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-stone-200 inline-block"></span> &gt; 25% Saudável</span>
           </div>
         </div>
       </div>
@@ -554,12 +579,12 @@
       <!-- Tabelas Detalhadas: Todos os 208 Clientes (ABC) e Todos os 46 SKUs -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="card p-4 border-t-4 border-t-cg_dark">
-          <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center justify-between mb-2 gap-2">
             <div>
-              <h4 class="text-xs font-black uppercase text-cg_dark">👥 Ranking Completo de Clientes (208 CNPJs)</h4>
-              <p class="text-[10px] text-stone-500">Faturamento, Lucro Bruto, Margem e % Acumulado (clientes negativos destacados)</p>
+              <h4 id="abc-cli-title" class="text-xs font-black uppercase text-cg_dark">👥 Ranking Completo de Clientes (208 CNPJs)</h4>
+              <p class="text-[10px] text-stone-500">Consolidado por CNPJ único • <strong>Clique em um cliente</strong> para abrir histórico de pedidos e itens</p>
             </div>
-            <span id="abc-cli-count" class="text-xs font-black text-cg_rust">208 clientes</span>
+            <span id="abc-cli-count" class="text-xs font-black text-cg_rust whitespace-nowrap">208 CNPJs</span>
           </div>
           <div class="max-h-72 overflow-y-auto border border-stone-200 rounded-xl">
             <table class="w-full text-left text-[11px]">
@@ -1316,6 +1341,109 @@
   </div>
 
   <!-- =========================================================================
+       MODAL DRILL-DOWN DE CLIENTE EM 2 NÍVEIS (NÍVEL 1: PEDIDOS | NÍVEL 2: ITENS)
+  ========================================================================== -->
+  <div id="client-drill-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-3 md:p-4 overflow-y-auto" onclick="if(event.target===this) closeClientDrillDown()">
+    <div class="card max-w-5xl w-full p-4 md:p-5 space-y-3.5 border-t-4 border-t-cg_rust flex flex-col max-h-[92vh]">
+      <!-- Cabeçalho + Breadcrumb + Botão Voltar (2.10, 2.11) -->
+      <div class="flex flex-wrap justify-between items-start gap-2 border-b border-stone-200 pb-2.5">
+        <div class="space-y-1 flex-1 min-w-[240px]">
+          <div id="client-drill-breadcrumb" class="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-stone-500"></div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="btn-client-drill-back" onclick="clientDrillBack()" class="hidden px-2.5 py-1 rounded-lg bg-stone-200 hover:bg-stone-300 text-cg_dark font-black text-[11px] transition">
+              ← Voltar
+            </button>
+            <h3 id="cd-client-name" class="text-sm md:text-base font-black text-cg_dark">Nome do Cliente</h3>
+            <span id="cd-client-curva" class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-cg_dark text-cg_gold">Curva A</span>
+          </div>
+          <p id="cd-client-meta" class="text-[11px] text-stone-500 font-semibold">Município • CNPJ: 00.000.000/0000-00 • Período filtrado</p>
+        </div>
+        <button onclick="closeClientDrillDown()" class="text-stone-400 hover:text-stone-700 font-black text-xl leading-none px-2 py-1" title="Fechar (Esc)">✕</button>
+      </div>
+
+      <!-- Resumo do Cliente no Topo (2.4) -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+        <div class="p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-center">
+          <p class="text-[9px] uppercase font-bold text-stone-400">Faturamento</p>
+          <p id="cd-kpi-fat" class="text-sm font-black text-cg_dark">R$ 0,00</p>
+        </div>
+        <div class="p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-center">
+          <p class="text-[9px] uppercase font-bold text-stone-400">Lucro Bruto</p>
+          <p id="cd-kpi-lucro" class="text-sm font-black text-cg_green">R$ 0,00</p>
+        </div>
+        <div class="p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-center">
+          <p class="text-[9px] uppercase font-bold text-stone-400">Margem Média</p>
+          <p id="cd-kpi-mb" class="text-sm font-black text-cg_dark">0,0%</p>
+        </div>
+        <div class="p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-center">
+          <p class="text-[9px] uppercase font-bold text-stone-400">Pedidos</p>
+          <p id="cd-kpi-ped" class="text-sm font-black text-cg_rust">0</p>
+        </div>
+        <div class="col-span-2 sm:col-span-1 p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-center">
+          <p class="text-[9px] uppercase font-bold text-stone-400">Ticket Médio</p>
+          <p id="cd-kpi-tkt" class="text-sm font-black text-cg_dark">R$ 0,00</p>
+        </div>
+      </div>
+
+      <!-- NÍVEL 1: HISTÓRICO DE PEDIDOS DO CLIENTE (2.2 - 2.5) -->
+      <div id="cd-level-orders" class="flex-1 flex flex-col min-h-0 space-y-2">
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+          <p class="text-[11px] font-bold text-stone-600">📋 Histórico de Pedidos no Período (mais recente primeiro) — <span class="text-cg_rust">clique em um pedido para ver os itens</span></p>
+          <span id="cd-orders-badge" class="text-[10px] font-black px-2 py-0.5 rounded bg-stone-100 text-stone-700">0 pedidos</span>
+        </div>
+        <div class="flex-1 overflow-y-auto min-h-[220px] border border-stone-200 rounded-xl">
+          <table class="w-full text-left text-[11px]">
+            <thead class="sticky top-0 bg-stone-100 shadow-sm z-10 text-stone-600 uppercase font-bold text-[10px]">
+              <tr>
+                <th class="p-2.5">Venda / NF-e</th>
+                <th class="p-2.5">Data</th>
+                <th class="p-2.5 text-right">Faturamento</th>
+                <th class="p-2.5 text-right">Custo Total</th>
+                <th class="p-2.5 text-right">Lucro Bruto</th>
+                <th class="p-2.5 text-right">Margem (%)</th>
+                <th class="p-2.5 text-center">Itens</th>
+              </tr>
+            </thead>
+            <tbody id="cd-orders-tbody" class="divide-y divide-stone-100 bg-white"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- NÍVEL 2: ITENS DO PEDIDO SELECIONADO (2.6 - 2.9) -->
+      <div id="cd-level-items" class="hidden flex-1 flex flex-col min-h-0 space-y-2">
+        <div class="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl bg-stone-50 border border-stone-200 text-xs">
+          <div>
+            <span id="cd-order-header" class="font-black text-cg_dark">Pedido #0000</span>
+            <span id="cd-order-sub" class="ml-2 text-[11px] text-stone-500 font-semibold">Data • NF-e</span>
+          </div>
+          <button onclick="backToClientOrders()" class="px-3 py-1 rounded-lg bg-cg_dark hover:bg-stone-700 text-white font-bold text-[11px] transition">
+            ← Voltar aos Pedidos
+          </button>
+        </div>
+        <div class="flex-1 overflow-y-auto min-h-[220px] border border-stone-200 rounded-xl">
+          <table class="w-full text-left text-[11px]">
+            <thead class="sticky top-0 bg-stone-100 shadow-sm z-10 text-stone-600 uppercase font-bold text-[10px]">
+              <tr>
+                <th class="p-2">Cód.</th>
+                <th class="p-2">Produto / Descrição</th>
+                <th class="p-2">Categoria</th>
+                <th class="p-2 text-right">Qtd</th>
+                <th class="p-2 text-right">Vlr. Unit.</th>
+                <th class="p-2 text-right">Faturamento</th>
+                <th class="p-2 text-right">Custo</th>
+                <th class="p-2 text-right">Lucro Bruto</th>
+                <th class="p-2 text-right">Margem (%)</th>
+              </tr>
+            </thead>
+            <tbody id="cd-items-tbody" class="divide-y divide-stone-100 bg-white"></tbody>
+            <tfoot id="cd-items-tfoot" class="bg-stone-100 border-t-2 border-stone-300 font-black text-cg_dark"></tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
        MODAL PASSO A PASSO DE ATIVAÇÃO DO APLICATIVO NATIVO E ATUALIZAÇÃO AUTOMÁTICA
   ========================================================================== -->
   <div id="install-modal" class="hidden fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4 overflow-y-auto">
@@ -1368,6 +1496,7 @@
     // ============================================================================
     const SKU_COST_TABLE = [{"codigo": 990058, "produto": "Q. R. Mestre Cuca 25x40g  T", "fornecedor": "TEIXEIRA", "categoria": "Queijo Ralado", "custo_unitario": 1.82, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991300, "produto": "Q.R. Baixo Teor Gordura Teixeira 25x40g (T)", "fornecedor": "TEIXEIRA", "categoria": "Queijo Ralado", "custo_unitario": 2.79, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 990022, "produto": "Q. R. Trad Teixeira 25x40g  T", "fornecedor": "TEIXEIRA", "categoria": "Queijo Ralado", "custo_unitario": 3.05, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991017, "produto": "Q. R. Grosso (Fiapo) Teixeira 25x40g (T)", "fornecedor": "TEIXEIRA", "categoria": "Queijo Ralado", "custo_unitario": 3.41, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991020, "produto": "Q. R. Premium Teixeira 25x40g (T)", "fornecedor": "TEIXEIRA", "categoria": "Queijo Ralado", "custo_unitario": 3.41, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 990025, "produto": "Q. R. Trad Teixeira 10x100g  T  P80g L100g", "fornecedor": "TEIXEIRA", "categoria": "Queijo Ralado", "custo_unitario": 7.04, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991600, "produto": "Q. Minas Padrão 12x480g (Aprox. 6Kg)", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 49.17, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991602, "produto": "Q. Minas Padrão 480g (UNI)", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 25.0, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991403, "produto": "Q. Parmesão Teixeira 3x5kg (Aprox. 15Kg)", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 55.12, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991404, "produto": "Q. Parmesão Teixeira Peça (Aprox. 5Kg)", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": null, "vigencia": null, "status": "SEM_CUSTO"}, {"codigo": 991413, "produto": "Q. Parmesão Cunha Teixeira 24x180g", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 10.23, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991414, "produto": "Q. Montanhês Teixeira 3x5kg (Aprox. 15Kg)", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 47.97, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991415, "produto": "Q. Montanhês Cunha Teixeira 12x350g (Aprox. 4,2Kg)", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 47.97, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991416, "produto": "Q. Montanhês Cunha Teixeira 350G (UNI)", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 15.99, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 990062, "produto": "Q. Montanhês Cunha Mestre Cuca 12x350g (Aprox. 4,2Kg)", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 40.0, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 990063, "produto": "Q. Montanhês Cunha Mestre Cuca 350g (UNI)", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 18.0, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991700, "produto": "Q. Proosdij Cunha 24x180g Reserva da Familia Teixeira", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 10.9, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991702, "produto": "Q. Parmesao Cunha 24X180g Reserva da Familia Teixeira", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 12.55, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991900, "produto": "Q. Coalho Teixeira 20x300g PT C/7 Espetos", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 14.9, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 991802, "produto": "RICOTA FRESCA 400G TEIXEIRA - (CX C/12 U", "fornecedor": "TEIXEIRA", "categoria": "Queijos", "custo_unitario": 13.25, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 994009, "produto": "Manteiga Com Sal Teixeira 12x500g - Pote", "fornecedor": "TEIXEIRA", "categoria": "Manteiga", "custo_unitario": 22.01, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 994010, "produto": "Manteiga Com Sal Teixeira 24x200g - Pote", "fornecedor": "TEIXEIRA", "categoria": "Manteiga", "custo_unitario": 8.9, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 994019, "produto": "Manteiga Sem Sal Teixeira 12x500g - Pote", "fornecedor": "TEIXEIRA", "categoria": "Manteiga", "custo_unitario": 22.01, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 994020, "produto": "Manteiga Sem Sal Teixeira 24x200g - Pote", "fornecedor": "TEIXEIRA", "categoria": "Manteiga", "custo_unitario": 8.9, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 996004, "produto": "Manteiga Tablete Com Sal Teixeira 24x200g", "fornecedor": "TEIXEIRA", "categoria": "Manteiga", "custo_unitario": 8.91, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 996005, "produto": "Manteiga Tablete Sem Sal Teixeira 24x200g", "fornecedor": "TEIXEIRA", "categoria": "Manteiga", "custo_unitario": 8.91, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 994024, "produto": "Mantemix Com Sal Mestre Cuca 12x500g - Pote", "fornecedor": "TEIXEIRA", "categoria": "Manteiga", "custo_unitario": 9.3, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 994023, "produto": "Mantemix Com Sal Mestre Cuca 24x200g - Pote", "fornecedor": "TEIXEIRA", "categoria": "Manteiga", "custo_unitario": 4.06, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 994026, "produto": "Mix Cremosa Com Sal Teixeira  24x500g - Pote", "fornecedor": "TEIXEIRA", "categoria": "Manteiga", "custo_unitario": 15.33, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 994027, "produto": "Manteiga Cremosa Com Sal Teixeira  24x200g - Pote", "fornecedor": "TEIXEIRA", "categoria": "Manteiga", "custo_unitario": 6.48, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 995000, "produto": "Manteiga Zero Lactose Com Sal Teixeira  24x200g - Pote", "fornecedor": "TEIXEIRA", "categoria": "Manteiga", "custo_unitario": 9.77, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 101, "produto": "BOLACHA DELÍCIA MANTEIGA - 20 x 250g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 4.82, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 102, "produto": "BOLACHA DELÍCIA AMANTEIGADA - 20 x 250g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 4.35, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 103, "produto": "BOLACHA DELÍCIA COQUINHO - 20 x 250g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 2.76, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 104, "produto": "BOLACHA DELÍCIA QUEIJO - 20 x 250g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 4.44, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 105, "produto": "BOLACHA RAINHA - 20 x 300g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 4.82, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 106, "produto": "BOLACHA DELÍCIA SETE CAPAS TRADICIONAL  - 10 x 250g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 5.52, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 107, "produto": "BOLACHA DELÍCIA SETE CAPAS CANELA  - 10 x 250g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 5.52, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 108, "produto": "BOLACHA DELÍCIA SETE CAPAS COCO - 10 x 250g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 5.52, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 109, "produto": "BOLACHA DELÍCIA MANTEIGA PREMIUM  - 20 x 250g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 5.23, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 110, "produto": "BOLLACHA CEBOLA E SALSA  - 20 x 250g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 5.02, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 111, "produto": "BOLACHA DELÍCIA SETE CAPAS SALGADA - 10 x 250g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 5.52, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 112, "produto": "BOLACHA DELICINHA LEITE  - 10 x 220g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 4.68, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 113, "produto": "BOLACHA DELICINHA CHOCOLATE  - 10 x 220g", "fornecedor": "DELICIA NORDESTINA", "categoria": "Biscoitos", "custo_unitario": 4.68, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 65, "produto": "OVOS DE CODORNA EM CONSERVA - POUCH 250G", "fornecedor": "CODORNA", "categoria": "Ovos Conserva", "custo_unitario": 8.65, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 59, "produto": "OVOS DE CODORNA SEMI CONSERVA - POUCH 250G", "fornecedor": "CODORNA", "categoria": "Ovos Conserva", "custo_unitario": 8.65, "vigencia": "2025-09-01", "status": "CADASTRADO"}, {"codigo": 2, "produto": "OVOS DE CODORNA SEMI CONSERVA - BAG 1KG", "fornecedor": "CODORNA", "categoria": "Ovos Conserva", "custo_unitario": 24.1, "vigencia": "2025-09-01", "status": "CADASTRADO"}];
     const SKU_COST_MAP = Object.fromEntries(SKU_COST_TABLE.map(s => [s.codigo, s]));
+    const ORDER_META = {"1486":{"dt":"2026-11-12","nf":"NF-e: 16624"},"1511":{"dt":"2026-11-04","nf":"NF-e: 16606"},"1512":{"dt":"2026-11-04","nf":"NF-e: 16607"},"1513":{"dt":"2026-11-05","nf":"NF-e: 16629"},"1515":{"dt":"2026-11-08","nf":"NF-e: 16620"},"1516":{"dt":"2026-11-08","nf":"NF-e: 16621"},"1517":{"dt":"2026-11-08","nf":"NF-e: 16613"},"1518":{"dt":"2026-11-08","nf":"NF-e: 16622"},"1519":{"dt":"2026-11-09","nf":"NF-e: 16623"},"1520":{"dt":"2026-11-10","nf":"NF-e: 16618"},"1521":{"dt":"2026-11-10","nf":"NF-e: 16619"},"1522":{"dt":"2026-11-11","nf":"NF-e: 16617"},"1523":{"dt":"2026-11-11","nf":"NF-e: 16616"},"1524":{"dt":"2026-11-11","nf":"NF-e: 16615"},"1525":{"dt":"2026-11-11","nf":"NF-e: 16614"},"1526":{"dt":"2026-11-11","nf":"(em branco)"},"1527":{"dt":"2026-11-11","nf":"(em branco)"},"1528":{"dt":"2026-11-12","nf":"NF-e: 16625"},"1529":{"dt":"2026-11-12","nf":"NF-e: 16626"},"1530":{"dt":"2026-11-12","nf":"NF-e: 16627"},"1532":{"dt":"2026-11-13","nf":"NF-e: 16628"},"1533":{"dt":"2026-11-13","nf":"NF-e: 16630"},"1535":{"dt":"2026-11-16","nf":"NF-e: 16634"},"1536":{"dt":"2026-11-16","nf":"NF-e: 16635"},"1537":{"dt":"2026-11-16","nf":"NF-e: 16636"},"1538":{"dt":"2026-11-16","nf":"(em branco)"},"1540":{"dt":"2026-11-16","nf":"(em branco)"},"1541":{"dt":"2026-11-16","nf":"(em branco)"},"1542":{"dt":"2026-11-16","nf":"NF-e: 16633"},"1543":{"dt":"2026-11-17","nf":"NF-e: 16632"},"1544":{"dt":"2026-11-17","nf":"NF-e: 16631"},"1545":{"dt":"2026-11-18","nf":"NF-e: 16637"},"1546":{"dt":"2026-11-18","nf":"NF-e: 16638"},"1547":{"dt":"2026-11-18","nf":"NF-e: 16639"},"1548":{"dt":"2026-11-18","nf":"NF-e: 16640"},"1549":{"dt":"2026-11-18","nf":"NF-e: 16641"},"1550":{"dt":"2026-11-18","nf":"NF-e: 16642"},"1551":{"dt":"2026-11-18","nf":"NF-e: 16643"}};
 
     // TAREFA 1.2 & 1.3 — FUNÇÃO CENTRALIZADA E ÚNICA DE CÁLCULO DE CUSTO E MARGEM
     function calculateFinancialMetrics(codigoSku, quantidadeItens, valorTotal) {
@@ -2621,18 +2750,61 @@
       renderCatProductTable(dataObj);
       resetCarousel();
       renderProductProfitabilityTables();
+      if (clientDrillState.isOpen && clientDrillState.cnpj) {
+        refreshClientDrillDown();
+      }
+    }
+
+    function fmtCNPJ(cnpj) {
+      const d = String(cnpj || '').replace(/\D/g, '').padStart(14, '0');
+      if (d === '00000000000000') return 'Sem CNPJ';
+      return `${d.slice(0,2)}.${d.slice(2,5)}.${d.slice(5,8)}/${d.slice(8,12)}-${d.slice(12,14)}`;
+    }
+
+    function fmtDateBR(iso) {
+      if (!iso || iso.length < 10) return iso || '—';
+      const [y, m, d] = iso.split('-');
+      return `${d}/${m}/${y}`;
     }
 
     function renderAbcClientTable(dataObj) {
-      const activeClients = dataObj.cliStats
-        .filter(c => c.simFat > 0)
-        .sort((a, b) => b.simFat - a.simFat);
+      // Consolidação garantida por CNPJ normalizado (Parte 3.2 & 3.3)
+      const byCnpj = new Map();
+      dataObj.cliStats.forEach(c => {
+        if (c.simFat <= 0) return;
+        const key = String(c.cnpj || '').replace(/\D/g, '').padStart(14, '0');
+        if (!byCnpj.has(key)) {
+          byCnpj.set(key, {
+            cnpj: key,
+            cliente: c.cliente,
+            municipio: c.municipio,
+            curva: c.curva,
+            simFat: 0,
+            simCusto: 0,
+            simLucro: 0,
+            pedSet: new Set()
+          });
+        }
+        const entry = byCnpj.get(key);
+        entry.simFat += c.simFat;
+        entry.simCusto += c.simCusto;
+        entry.simLucro += c.simLucro;
+        c.pedSet.forEach(p => entry.pedSet.add(p));
+      });
 
+      const activeClients = Array.from(byCnpj.values()).sort((a, b) => b.simFat - a.simFat);
       const tableTot = activeClients.reduce((s, c) => s + c.simFat, 0);
       let runSum = 0;
 
       const tbody = document.getElementById('tbody-abc-clientes');
-      document.getElementById('abc-cli-count').textContent = `${activeClients.length} clientes`;
+      const totalBaseCnpjs = CLIENTS_DB.length;
+      const titleEl = document.getElementById('abc-cli-title');
+      if (titleEl) {
+        titleEl.textContent = activeClients.length === totalBaseCnpjs
+          ? `👥 Ranking Completo de Clientes (${activeClients.length} CNPJs)`
+          : `👥 Ranking Completo de Clientes (${activeClients.length} de ${totalBaseCnpjs} CNPJs no período)`;
+      }
+      document.getElementById('abc-cli-count').textContent = `${activeClients.length} CNPJs`;
 
       if (activeClients.length === 0 || tableTot === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-stone-400 font-bold">Nenhum cliente com compras no filtro atual.</td></tr>`;
@@ -2650,15 +2822,16 @@
         if (c.curva === 'Curva A') bgBadge = 'bg-cg_dark text-cg_gold';
         else if (c.curva === 'Curva B') bgBadge = 'bg-emerald-100 text-emerald-900';
 
-        const rowCls = isNeg ? 'bg-red-50/70 hover:bg-red-100/60' : 'hover:bg-stone-50';
+        const rowCls = isNeg ? 'bg-red-50/70 hover:bg-red-100/70' : 'hover:bg-amber-50/50';
         const mbCls = isNeg ? 'text-red-600 font-black' : (mbCli < 15 ? 'text-amber-700 font-bold' : 'text-cg_green font-bold');
+        const pedTxt = c.pedSet.size === 1 ? '1 ped' : `${c.pedSet.size} peds`;
 
         return `
-          <tr class="${rowCls} transition-colors">
+          <tr onclick="openClientDrillDown('${c.cnpj}')" class="${rowCls} cursor-pointer transition-colors group" title="Clique para ver o histórico de pedidos de ${c.cliente}">
             <td class="p-2 font-bold text-stone-400">${idx + 1}</td>
             <td class="p-2">
-              <p class="font-bold text-cg_dark truncate max-w-[160px]" title="${c.cliente} (${c.pedSet.size} ped)">${c.cliente}</p>
-              <p class="text-[9px] text-stone-400 font-semibold">${c.municipio} • ${c.pedSet.size} ped</p>
+              <p class="font-bold text-cg_dark group-hover:text-cg_rust transition-colors leading-tight" title="${c.cliente} | CNPJ ${fmtCNPJ(c.cnpj)}">${c.cliente}</p>
+              <p class="text-[9px] text-stone-400 font-semibold mt-0.5">${c.municipio} • ${pedTxt} • ${fmtCNPJ(c.cnpj)}</p>
             </td>
             <td class="p-2 text-center"><span class="px-1.5 py-0.5 rounded ${bgBadge} text-[9px] font-black uppercase">${c.curva.replace('Curva ', '')}</span></td>
             <td class="p-2 text-right font-black text-cg_dark whitespace-nowrap">${fmtBRL(c.simFat)}</td>
@@ -2946,40 +3119,459 @@
       const dataObj = lastComputedDash || computeDashboardData();
       const activeSkus = dataObj.skuStats.filter(p => p.simFat > 0);
 
-      const skusWithCost = activeSkus.filter(p => p.hasCost && (!dashFilters.excludeAlerts || p.alerta === null));
+      // Produtos com custo calculável (separando os sem custo conforme Parte 1.6)
+      const skusWithCost = activeSkus
+        .filter(p => p.hasCost && (!dashFilters.excludeAlerts || p.alerta === null))
+        .map(p => ({
+          ...p,
+          simMb: p.simFat > 0 ? (p.simLucro / p.simFat) * 100 : 0
+        }));
       const skusNoCost = activeSkus.filter(p => !p.hasCost);
 
+      // Top 10 Mais Rentáveis (mantido por Lucro Bruto R$)
       const mostProfit = [...skusWithCost].sort((a, b) => b.simLucro - a.simLucro).slice(0, 10);
-      const leastProfitWithCost = [...skusWithCost].sort((a, b) => a.simLucro - b.simLucro);
-      const leastProfit = [...skusNoCost, ...leastProfitWithCost].slice(0, 10);
 
-      const renderRow = (p, isLow) => {
-        const hasCost = p.hasCost;
-        const mb = (hasCost && p.simFat > 0) ? (p.simLucro / p.simFat * 100) : null;
+      // Parte 1.1: Ordenar por MARGEM PERCENTUAL crescente (do pior para o melhor)
+      const sortedByMarginAsc = [...skusWithCost].sort((a, b) => a.simMb - b.simMb);
+
+      // Parte 1.7: Resumo de produtos abaixo de 15% de margem e impacto em reais
+      const below15 = sortedByMarginAsc.filter(p => p.simMb < 15);
+      const below15Fat = below15.reduce((s, p) => s + p.simFat, 0);
+      const below15Lucro = below15.reduce((s, p) => s + p.simLucro, 0);
+      const gapTo15 = below15.reduce((s, p) => s + ((p.simFat * 0.15) - p.simLucro), 0);
+      const summaryEl = document.getElementById('low-margin-summary');
+      if (summaryEl) {
+        if (below15.length > 0) {
+          summaryEl.className = 'mb-2.5 px-2.5 py-2 rounded-xl bg-red-50/80 border border-red-200 text-[11px] text-red-900 flex flex-wrap items-center justify-between gap-1.5';
+          summaryEl.innerHTML = `
+            <span>🚨 <strong>${below15.length} produto(s)</strong> abaixo de 15% de margem</span>
+            <span class="font-bold">Fat.: <strong>${fmtBRL(below15Fat)}</strong> • Lucro: <strong>${fmtBRL(below15Lucro)}</strong> • Déficit p/ 15%: <strong class="text-red-700">${fmtBRL(gapTo15)}</strong></span>
+          `;
+        } else {
+          summaryEl.className = 'mb-2.5 px-2.5 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-900 flex flex-wrap items-center justify-between gap-1.5';
+          summaryEl.innerHTML = `
+            <span>✅ <strong>0 produtos</strong> abaixo de 15% de margem no período selecionado</span>
+            <span class="font-bold text-emerald-700">Impacto abaixo do piso: R$ 0,00</span>
+          `;
+        }
+      }
+
+      // Parte 1.6: Seção separada para produtos sem custo cadastrado
+      const noCostBox = document.getElementById('box-skus-sem-custo');
+      if (noCostBox) {
+        if (skusNoCost.length > 0) {
+          noCostBox.classList.remove('hidden');
+          noCostBox.innerHTML = `
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[10px] font-black uppercase text-red-700">⚠️ Sem custo cadastrado (${skusNoCost.length} SKU — fora do ranking de margem)</span>
+            </div>
+            <div class="space-y-1">
+              ${skusNoCost.map(p => `
+                <div onclick="openProductDrillDown(${p.codigo})" class="cursor-pointer flex items-center justify-between text-[11px] px-2 py-1 rounded-lg bg-white border border-red-200 hover:bg-red-50 transition">
+                  <span class="font-bold text-red-900 truncate max-w-[220px]" title="[${p.codigo}] ${p.nome}">#${p.codigo} • ${p.nome}</span>
+                  <span class="font-black text-cg_dark whitespace-nowrap ml-2">${fmtBRL(p.simFat)} <span class="text-[9px] font-bold text-red-600 ml-1">Sem custo cadastrado</span></span>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        } else {
+          noCostBox.classList.add('hidden');
+          noCostBox.innerHTML = '';
+        }
+      }
+
+      // Parte 1.5: Aplicar filtro de teto de margem
+      const thrSel = document.getElementById('low-margin-threshold');
+      const thrVal = thrSel ? thrSel.value : '15';
+      let filteredLow = sortedByMarginAsc;
+      if (thrVal !== 'ALL') {
+        const limitPct = Number(thrVal);
+        filteredLow = sortedByMarginAsc.filter(p => p.simMb < limitPct);
+      }
+      const leastMarginTop10 = filteredLow.slice(0, 10);
+
+      // Render Top 10 Mais Rentáveis
+      const renderMostRow = (p) => {
         const alertTag = p.alerta === 'DIVERGENCIA_UNIDADE'
           ? '<span class="ml-1 px-1 py-0.5 rounded bg-amber-100 text-amber-900 text-[8px] font-black" title="Divergência de unidade entre custo e venda">⚠️ UNID</span>'
           : '';
-
-        if (!hasCost) {
-          return `<tr class="bg-red-50/70 hover:bg-red-100/60 cursor-pointer transition-colors" onclick="openProductDrillDown(${p.codigo})">
-            <td class="py-1.5 font-bold text-red-900 truncate max-w-[160px]" title="[${p.codigo}] ${p.nome}">${p.nome}</td>
-            <td class="py-1.5 text-right font-bold text-cg_dark">${fmtBRL(p.simFat)}</td>
-            <td class="py-1.5 text-right font-black text-red-600" colspan="3">⚠️ Custo não cadastrado (SKU #${p.codigo})</td>
-          </tr>`;
-        }
-
-        const lucCls = p.simLucro < 0 ? 'text-red-600' : (isLow ? 'text-amber-700' : 'text-cg_green');
+        const lucCls = p.simLucro < 0 ? 'text-red-600' : 'text-cg_green';
         return `<tr class="hover:bg-stone-50 cursor-pointer transition-colors" onclick="openProductDrillDown(${p.codigo})">
           <td class="py-1.5 font-bold text-cg_dark truncate max-w-[160px]" title="[${p.codigo}] ${p.nome}">${p.nome}${alertTag}</td>
           <td class="py-1.5 text-right font-semibold text-stone-700">${fmtBRL(p.simFat)}</td>
           <td class="py-1.5 text-right text-stone-500">${fmtBRL(p.simCusto)}</td>
           <td class="py-1.5 text-right font-black ${lucCls}">${fmtBRL(p.simLucro)}</td>
-          <td class="py-1.5 text-right font-black ${lucCls}">${fmtPct(mb)}</td>
+          <td class="py-1.5 text-right font-black ${lucCls}">${fmtPct(p.simMb)}</td>
         </tr>`;
       };
 
-      document.getElementById('tbody-prod-most-profit').innerHTML = mostProfit.map(p => renderRow(p, false)).join('');
-      document.getElementById('tbody-prod-least-profit').innerHTML = leastProfit.map(p => renderRow(p, true)).join('');
+      // Parte 1.4: Render Top 10 Menor Margem (%) com destaque visual por faixa
+      const renderLowMarginRow = (p) => {
+        const mb = p.simMb;
+        let rowCls = 'bg-white hover:bg-stone-50';
+        let mbCls = 'text-stone-700 font-bold';
+        let lucCls = 'text-cg_dark font-bold';
+
+        if (mb < 0) {
+          rowCls = 'bg-red-100/90 hover:bg-red-200/70 border-l-4 border-l-red-600';
+          mbCls = 'text-red-800 font-black';
+          lucCls = 'text-red-800 font-black';
+        } else if (mb < 15) {
+          rowCls = 'bg-red-50/80 hover:bg-red-100/70 border-l-2 border-l-red-400';
+          mbCls = 'text-red-600 font-black';
+          lucCls = 'text-red-700 font-bold';
+        } else if (mb <= 25) {
+          rowCls = 'bg-amber-50/70 hover:bg-amber-100/60 border-l-2 border-l-amber-400';
+          mbCls = 'text-amber-700 font-black';
+          lucCls = 'text-amber-800 font-bold';
+        }
+
+        const alertTag = p.alerta === 'DIVERGENCIA_UNIDADE'
+          ? '<span class="ml-1 px-1 py-0.5 rounded bg-amber-100 text-amber-900 text-[8px] font-black" title="Divergência de unidade entre custo e venda">⚠️ UNID</span>'
+          : '';
+
+        return `<tr class="${rowCls} cursor-pointer transition-colors" onclick="openProductDrillDown(${p.codigo})">
+          <td class="py-1.5 pl-1.5 font-bold text-cg_dark truncate max-w-[165px]" title="[${p.codigo}] ${p.nome}">${p.nome}${alertTag}</td>
+          <td class="py-1.5 text-right font-semibold text-stone-700 whitespace-nowrap">${fmtBRL(p.simFat)}</td>
+          <td class="py-1.5 text-right text-stone-500 whitespace-nowrap">${fmtBRL(p.simCusto)}</td>
+          <td class="py-1.5 text-right whitespace-nowrap ${lucCls}">${fmtBRL(p.simLucro)}</td>
+          <td class="py-1.5 pr-1.5 text-right whitespace-nowrap ${mbCls}">${fmtPct(mb)}</td>
+        </tr>`;
+      };
+
+      document.getElementById('tbody-prod-most-profit').innerHTML = mostProfit.length > 0
+        ? mostProfit.map(renderMostRow).join('')
+        : `<tr><td colspan="5" class="py-4 text-center text-stone-400 font-bold">Nenhum produto no filtro atual.</td></tr>`;
+
+      const leastTbody = document.getElementById('tbody-prod-least-profit');
+      if (leastMarginTop10.length > 0) {
+        leastTbody.innerHTML = leastMarginTop10.map(renderLowMarginRow).join('');
+      } else {
+        leastTbody.innerHTML = `<tr><td colspan="5" class="py-5 text-center text-stone-500">
+          <p class="font-bold">Nenhum produto encontrado abaixo de ${thrVal}% de margem neste período.</p>
+          <button onclick="document.getElementById('low-margin-threshold').value='ALL'; renderProductProfitabilityTables();" class="mt-2 px-3 py-1 rounded-lg bg-cg_dark text-white text-[10px] font-bold hover:opacity-90">
+            Exibir Top 10 Menores Margens (Todos)
+          </button>
+        </td></tr>`;
+      }
+    }
+
+    // =========================================================================
+    // PARTE 2: DRILL-DOWN DE CLIENTES EM 2 NÍVEIS (PEDIDOS -> ITENS DO PEDIDO)
+    // =========================================================================
+    let clientDrillState = {
+      isOpen: false,
+      level: 1, // 1 = pedidos do cliente, 2 = itens do pedido
+      cnpj: null,
+      clientObj: null,
+      orders: [],
+      selectedOrderNum: null
+    };
+
+    function getClientOrdersInFilter(targetCnpj) {
+      const cleanTarget = String(targetCnpj || '').replace(/\D/g, '').padStart(14, '0');
+      const ordersMap = new Map();
+
+      for (let i = 0; i < SALES_RAW.length; i++) {
+        const row = SALES_RAW[i];
+        const mIdx = row[0];
+        const numVenda = row[1];
+        const cliIdx = row[2];
+        const skuIdx = row[3];
+        const qtd = row[4];
+        const cx = row[5];
+        const total = row[9];
+
+        const cliObj = CLIENTS_DB[cliIdx];
+        const rowCnpj = String(cliObj.cnpj || '').replace(/\D/g, '').padStart(14, '0');
+        if (rowCnpj !== cleanTarget) continue;
+
+        const mObj = MONTHLY_RECORDS[mIdx];
+        const skuObj = ALL_PRODUCTS_STATS[skuIdx];
+
+        // Respeitar rigorosamente os filtros vigentes (2.13)
+        if (dashFilters.ano !== 'TODOS' && mObj.ano !== dashFilters.ano) continue;
+        if (!dashFilters.meses.includes('TODOS') && !dashFilters.meses.includes(mObj.mes)) continue;
+        if (dashFilters.mesClick && mObj.label !== dashFilters.mesClick) continue;
+        if (dashFilters.categoria && skuObj.cat !== dashFilters.categoria) continue;
+        if (dashFilters.fornecedor !== 'TODOS' && skuObj.fornecedor !== dashFilters.fornecedor) continue;
+
+        const calc = calculateFinancialMetrics(skuObj.codigo, qtd, total);
+        const isAlertSku = (skuObj.alerta !== null);
+        const includeInAggMargin = dashFilters.excludeAlerts ? (!isAlertSku && calc.hasCost) : true;
+        const itemCusto = calc.hasCost ? calc.custoTotal : 0.0;
+        const itemLucro = calc.hasCost ? calc.lucroBruto : total;
+
+        if (!ordersMap.has(numVenda)) {
+          const meta = ORDER_META[String(numVenda)] || null;
+          ordersMap.set(numVenda, {
+            numVenda: numVenda,
+            nf: meta && meta.nf ? meta.nf : '',
+            dataIso: meta && meta.dt ? meta.dt : `${mObj.ano_mes}-00`,
+            dataDisplay: meta && meta.dt ? fmtDateBR(meta.dt) : mObj.label,
+            mIdx: mIdx,
+            fat: 0,
+            custo: 0,
+            lucro: 0,
+            hasUncostedItem: false,
+            items: []
+          });
+        }
+
+        const ord = ordersMap.get(numVenda);
+        ord.fat += total;
+        if (includeInAggMargin) {
+          ord.custo += itemCusto;
+          ord.lucro += (total - itemCusto);
+        }
+        if (!calc.hasCost) ord.hasUncostedItem = true;
+
+        ord.items.push({
+          codigo: skuObj.codigo,
+          nome: skuObj.nome,
+          categoria: skuObj.cat,
+          un: skuObj.un,
+          qtd: qtd,
+          cx: cx,
+          valorUnit: qtd > 0 ? total / qtd : 0,
+          fat: total,
+          hasCost: calc.hasCost,
+          custoUnit: calc.custoUnitario,
+          custo: calc.hasCost ? calc.custoTotal : null,
+          lucro: calc.hasCost ? calc.lucroBruto : null,
+          mb: calc.hasCost ? calc.margemBruta : null
+        });
+      }
+
+      // Parte 2.3: Ordenar por data decrescente (mais recente primeiro), desempate por numVenda decrescente
+      const orders = Array.from(ordersMap.values()).map(o => ({
+        ...o,
+        mb: o.fat > 0 ? (o.lucro / o.fat) * 100 : 0,
+        qtdItens: o.items.length
+      })).sort((a, b) => {
+        if (b.mIdx !== a.mIdx) return b.mIdx - a.mIdx;
+        if (b.dataIso !== a.dataIso) return b.dataIso.localeCompare(a.dataIso);
+        return b.numVenda - a.numVenda;
+      });
+
+      return orders;
+    }
+
+    function openClientDrillDown(cnpj) {
+      const cleanCnpj = String(cnpj || '').replace(/\D/g, '').padStart(14, '0');
+      const clientObj = CLIENTS_DB.find(c => String(c.cnpj || '').replace(/\D/g, '').padStart(14, '0') === cleanCnpj);
+      if (!clientObj) return;
+
+      clientDrillState.isOpen = true;
+      clientDrillState.cnpj = cleanCnpj;
+      clientDrillState.clientObj = clientObj;
+      clientDrillState.level = 1;
+      clientDrillState.selectedOrderNum = null;
+
+      refreshClientDrillDown();
+      document.getElementById('client-drill-modal').classList.remove('hidden');
+    }
+
+    function refreshClientDrillDown() {
+      const c = clientDrillState.clientObj;
+      if (!c) return;
+
+      const orders = getClientOrdersInFilter(clientDrillState.cnpj);
+      clientDrillState.orders = orders;
+
+      const totFat = orders.reduce((s, o) => s + o.fat, 0);
+      const totLucro = orders.reduce((s, o) => s + o.lucro, 0);
+      const mbMed = totFat > 0 ? (totLucro / totFat) * 100 : 0;
+      const tktMed = orders.length > 0 ? totFat / orders.length : 0;
+
+      const anoTxt = dashFilters.ano === 'TODOS' ? '2025 + 2026' : dashFilters.ano;
+      const mesTxt = dashFilters.mesClick ? dashFilters.mesClick : (dashFilters.meses.includes('TODOS') ? 'Todos os Meses' : `${dashFilters.meses.length} mês(es)`);
+
+      document.getElementById('cd-client-name').textContent = c.cliente;
+      document.getElementById('cd-client-curva').textContent = c.curva;
+      document.getElementById('cd-client-meta').textContent = `${c.municipio} • CNPJ: ${fmtCNPJ(c.cnpj)} • Período: ${anoTxt} (${mesTxt})`;
+
+      document.getElementById('cd-kpi-fat').textContent = fmtBRL(totFat);
+      const elLuc = document.getElementById('cd-kpi-lucro');
+      elLuc.textContent = fmtBRL(totLucro);
+      elLuc.className = totLucro < 0 ? 'text-sm font-black text-red-600' : 'text-sm font-black text-cg_green';
+
+      const elMb = document.getElementById('cd-kpi-mb');
+      elMb.textContent = fmtPct(mbMed);
+      elMb.className = mbMed < 0 ? 'text-sm font-black text-red-600' : (mbMed < 15 ? 'text-sm font-black text-amber-700' : 'text-sm font-black text-cg_dark');
+
+      document.getElementById('cd-kpi-ped').textContent = `${orders.length} ${orders.length === 1 ? 'pedido' : 'pedidos'}`;
+      document.getElementById('cd-kpi-tkt').textContent = fmtBRL(tktMed);
+
+      // Se estava no nível 2, verificar se o pedido ainda existe no novo filtro
+      if (clientDrillState.level === 2 && clientDrillState.selectedOrderNum !== null) {
+        const exists = orders.some(o => o.numVenda === clientDrillState.selectedOrderNum);
+        if (exists) {
+          renderClientOrderItems(clientDrillState.selectedOrderNum);
+          return;
+        } else {
+          clientDrillState.level = 1;
+          clientDrillState.selectedOrderNum = null;
+        }
+      }
+
+      renderClientOrdersLevel();
+    }
+
+    function renderClientDrillBreadcrumb() {
+      const bc = document.getElementById('client-drill-breadcrumb');
+      const backBtn = document.getElementById('btn-client-drill-back');
+      const cName = clientDrillState.clientObj ? clientDrillState.clientObj.cliente : '';
+
+      if (clientDrillState.level === 1) {
+        backBtn.classList.remove('hidden');
+        backBtn.textContent = '← Voltar ao Ranking';
+        bc.innerHTML = `
+          <button onclick="closeClientDrillDown()" class="hover:text-cg_rust underline">Ranking de Clientes</button>
+          <span>›</span>
+          <span class="text-cg_dark font-black">${cName}</span>
+        `;
+      } else {
+        backBtn.classList.remove('hidden');
+        backBtn.textContent = '← Voltar aos Pedidos';
+        bc.innerHTML = `
+          <button onclick="closeClientDrillDown()" class="hover:text-cg_rust underline">Ranking de Clientes</button>
+          <span>›</span>
+          <button onclick="backToClientOrders()" class="hover:text-cg_rust underline">${cName}</button>
+          <span>›</span>
+          <span class="text-cg_rust font-black">Pedido #${clientDrillState.selectedOrderNum}</span>
+        `;
+      }
+    }
+
+    function renderClientOrdersLevel() {
+      clientDrillState.level = 1;
+      clientDrillState.selectedOrderNum = null;
+      document.getElementById('cd-level-orders').classList.remove('hidden');
+      document.getElementById('cd-level-items').classList.add('hidden');
+      renderClientDrillBreadcrumb();
+
+      const orders = clientDrillState.orders;
+      document.getElementById('cd-orders-badge').textContent = `${orders.length} ${orders.length === 1 ? 'pedido' : 'pedidos'}`;
+      const tbody = document.getElementById('cd-orders-tbody');
+
+      if (orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-stone-500 font-bold">Nenhum pedido encontrado para este cliente no período e filtros selecionados.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => {
+        const isNeg = o.lucro < 0;
+        const rowCls = isNeg
+          ? 'bg-red-50 hover:bg-red-100/80 border-l-4 border-l-red-600'
+          : 'hover:bg-amber-50/50';
+        const mbCls = isNeg
+          ? 'text-red-700 font-black'
+          : (o.mb < 15 ? 'text-amber-700 font-black' : 'text-cg_green font-black');
+        const nfLabel = o.nf ? `<span class="block text-[9px] text-stone-400 font-semibold">${o.nf}</span>` : '';
+        const negTag = isNeg ? '<span class="ml-1 px-1.5 py-0.5 rounded bg-red-600 text-white text-[8px] font-black uppercase">Negativa</span>' : '';
+
+        return `
+          <tr onclick="openOrderItemsLevel(${o.numVenda})" class="${rowCls} cursor-pointer transition-colors">
+            <td class="p-2.5 font-black text-cg_dark whitespace-nowrap">
+              Venda #${o.numVenda}${negTag}
+              ${nfLabel}
+            </td>
+            <td class="p-2.5 font-semibold text-stone-600 whitespace-nowrap">${o.dataDisplay}</td>
+            <td class="p-2.5 text-right font-black text-cg_dark whitespace-nowrap">${fmtBRL(o.fat)}</td>
+            <td class="p-2.5 text-right text-stone-500 whitespace-nowrap">${fmtBRL(o.custo)}</td>
+            <td class="p-2.5 text-right whitespace-nowrap ${mbCls}">${fmtBRL(o.lucro)}</td>
+            <td class="p-2.5 text-right whitespace-nowrap ${mbCls}">${fmtPct(o.mb)}</td>
+            <td class="p-2.5 text-center whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded-full bg-stone-100 text-cg_dark font-black text-[10px]">${o.qtdItens} ${o.qtdItens === 1 ? 'item' : 'itens'} ›</span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openOrderItemsLevel(numVenda) {
+      clientDrillState.level = 2;
+      clientDrillState.selectedOrderNum = numVenda;
+      renderClientOrderItems(numVenda);
+    }
+
+    function renderClientOrderItems(numVenda) {
+      const ord = clientDrillState.orders.find(o => o.numVenda === numVenda);
+      if (!ord) {
+        renderClientOrdersLevel();
+        return;
+      }
+
+      document.getElementById('cd-level-orders').classList.add('hidden');
+      document.getElementById('cd-level-items').classList.remove('hidden');
+      renderClientDrillBreadcrumb();
+
+      document.getElementById('cd-order-header').textContent = `Pedido / Venda #${ord.numVenda}`;
+      document.getElementById('cd-order-sub').textContent = `${ord.dataDisplay}${ord.nf ? ' • ' + ord.nf : ''} • ${ord.qtdItens} ${ord.qtdItens === 1 ? 'item' : 'itens'}`;
+
+      const tbody = document.getElementById('cd-items-tbody');
+      tbody.innerHTML = ord.items.map(it => {
+        const isNeg = it.hasCost && it.lucro < 0;
+        const rowCls = isNeg
+          ? 'bg-red-50 border-l-4 border-l-red-600'
+          : (!it.hasCost ? 'bg-amber-50/50' : 'hover:bg-stone-50');
+        const mbCls = !it.hasCost
+          ? 'text-red-600 font-bold'
+          : (isNeg ? 'text-red-700 font-black' : (it.mb < 15 ? 'text-amber-700 font-bold' : 'text-cg_green font-bold'));
+
+        return `
+          <tr class="${rowCls} transition-colors">
+            <td class="p-2 font-bold text-stone-500 whitespace-nowrap">#${it.codigo}</td>
+            <td class="p-2 font-bold text-cg_dark">
+              ${it.nome}
+              ${isNeg ? '<span class="ml-1 px-1 py-0.5 rounded bg-red-600 text-white text-[8px] font-black uppercase">Prejuízo</span>' : ''}
+            </td>
+            <td class="p-2 text-stone-600 font-semibold whitespace-nowrap">${it.categoria}</td>
+            <td class="p-2 text-right font-bold text-cg_dark whitespace-nowrap">${it.qtd.toLocaleString('pt-BR', {maximumFractionDigits: 2})} ${it.un}</td>
+            <td class="p-2 text-right text-stone-600 whitespace-nowrap">${fmtBRL(it.valorUnit)}</td>
+            <td class="p-2 text-right font-black text-cg_dark whitespace-nowrap">${fmtBRL(it.fat)}</td>
+            <td class="p-2 text-right text-stone-500 whitespace-nowrap">${it.hasCost ? fmtBRL(it.custo) : 'Sem custo'}</td>
+            <td class="p-2 text-right whitespace-nowrap ${mbCls}">${it.hasCost ? fmtBRL(it.lucro) : '—'}</td>
+            <td class="p-2 text-right whitespace-nowrap ${mbCls}">${it.hasCost ? fmtPct(it.mb) : 'Sem custo'}</td>
+          </tr>
+        `;
+      }).join('');
+
+      const sumFat = ord.items.reduce((s, it) => s + it.fat, 0);
+      const sumCusto = ord.items.reduce((s, it) => s + (it.hasCost ? it.custo : 0), 0);
+      const sumLucro = sumFat - sumCusto;
+      const sumMb = sumFat > 0 ? (sumLucro / sumFat) * 100 : 0;
+      const totMbCls = sumLucro < 0 ? 'text-red-700' : (sumMb < 15 ? 'text-amber-700' : 'text-cg_green');
+
+      document.getElementById('cd-items-tfoot').innerHTML = `
+        <tr>
+          <td colspan="5" class="p-2.5 text-right uppercase text-[10px] text-stone-600">Total do Pedido (${ord.qtdItens} ${ord.qtdItens === 1 ? 'item' : 'itens'}):</td>
+          <td class="p-2.5 text-right whitespace-nowrap">${fmtBRL(sumFat)}</td>
+          <td class="p-2.5 text-right whitespace-nowrap text-stone-600">${fmtBRL(sumCusto)}</td>
+          <td class="p-2.5 text-right whitespace-nowrap ${totMbCls}">${fmtBRL(sumLucro)}</td>
+          <td class="p-2.5 text-right whitespace-nowrap ${totMbCls}">${fmtPct(sumMb)}</td>
+        </tr>
+      `;
+    }
+
+    function backToClientOrders() {
+      renderClientOrdersLevel();
+    }
+
+    function clientDrillBack() {
+      if (clientDrillState.level === 2) {
+        backToClientOrders();
+      } else {
+        closeClientDrillDown();
+      }
+    }
+
+    function closeClientDrillDown() {
+      clientDrillState.isOpen = false;
+      clientDrillState.level = 1;
+      clientDrillState.selectedOrderNum = null;
+      document.getElementById('client-drill-modal').classList.add('hidden');
     }
 
     // =========================================================================
